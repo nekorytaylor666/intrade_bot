@@ -18,10 +18,12 @@
     "body-parser": "^1.19.0",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "mongoose": "^5.7.1",
     "node-telegram-bot-api": "^0.30.0",
     "telegraf": "^3.32.0",
     "telegraf-flow": "^8.3.0",
     "telegraf-inline-menu": "^3.6.2",
+    "telegraf-session-redis": "^5.1.0",
     "typescript": "^3.6.3"
   },
   "devDependencies": {
