@@ -1,19 +1,24 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 require('dotenv').config();
-
+//package imports
 const Telegraf = require('telegraf');
 const express = require('express');
 const bodyParser = require('body-parser');
 const TelegrafInlineMenu = require('telegraf-inline-menu')
+const TelegrafFlow = require('telegraf-flow')
+const {
+	Scene
+} = TelegrafFlow
 
+//env variables
 const port = process.env.PORT;
 const apiToken = process.env.TELEGRAM_TOKEN;
 const webHookUrl = process.env.WEBHOOK_URL;
 
+//essential inits
 const bot = new Telegraf(apiToken);
 const app = express();
 const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`);
-
 app.use(bodyParser.json());
 
 
@@ -24,6 +29,18 @@ menu.simpleButton('I am excited!', 'a', {
 	doFunc: ctx => ctx.reply('As am I!')
 })
 
+bot.use(menu.init());
+
+//order registration scene
+
+const orderRegistration = new Scene('orderRegistration');
+orderRegistration.enter((ctx) => {
+	ctx.reply('');
+});
+
+
+
+//command handlers
 bot.command('modern', ({
 	reply
 }) => reply('Yo'))
@@ -33,8 +50,11 @@ bot.on('text', ctx => {
 	ctx.reply('hi');
 });
 
+
+
+//inline query
 bot.on('inline_query', ctx => {
-	let query = ctx.update.inline_query.query; // If you analyze the context structure, query field contains our query.
+	const query = ctx.update.inline_query.query; // If you analyze the context structure, query field contains our query.
 	if (query.startsWith("/")) { // If user input is @yourbot /command
 		if (query.startsWith("/audio_src")) { // If user input is @yourbot /audio_src
 			// In this case we answer with a list of ogg voice data.
@@ -49,8 +69,8 @@ bot.on('inline_query', ctx => {
 			}]);
 		}
 	} else { // If user input is @yourbot name
-		let name_target = query; // Let's assume the query is actually the name.
-		let message_length = name_target.length; // Name length. We want to ensure it's > 0.
+		const name_target = query; // Let's assume the query is actually the name.
+		const message_length = name_target.length; // Name length. We want to ensure it's > 0.
 		if (message_length > 0) {
 			let full_message;
 			let dice = Math.floor(Math.random() * 8) + 1; // Let's throw a dice for a random message. (1, 8)
@@ -96,19 +116,11 @@ bot.on('inline_query', ctx => {
 	}
 })
 
-bot.use(menu.init());
 // bot.start((ctx) => ctx.reply('Hey there'));
-
-console.log(`${webHookUrl}/bot`);
-
-bot.launch();
-app.post('/bot', (req, res) => {
-	const body = req.body;
-	console.log(body);
-	res.status(200).send(req.body);
-});
-
 
 app.listen(port, function () {
 	console.log(`Example app listening on port ${port}!`);
 });
+
+//bot launch
+bot.launch();
