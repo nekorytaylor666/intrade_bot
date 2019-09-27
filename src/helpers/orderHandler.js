@@ -4,12 +4,12 @@ const Composer = require('telegraf/composer');
 const orderHandler = new Composer();
 
 const retrieveValue = (ignoreString, str) => {
-    const pattern1 = '(?!';
-    const pattern2 = ')\\b(?![\\s])(.*)';
+    const pattern1 = '(?![';
+    const pattern2 = '])(?!\\s)[\\w\\u0400-\\u04FF\\s]+';
 
+    // regex = /(?![ignoreString])(?!\s)[\w\u0400-\u04FF\s]+/gm;
     const regex = new RegExp(pattern1 + ignoreString + pattern2, 'gi');
 
-    // const regex = /(?!title)\b(?![\s])(.*)/gm;
     const match = str.match(regex);
     if (match && match[0] !== "") return match.join('');
     else return null
@@ -27,14 +27,6 @@ orderHandler.command('title', (ctx) => {
         );
     }
 });
-// } else {
-// 	ctx.reply(
-// 		`please input valid title
-// 		example: /title my awesome title`);
-// }
-
-// Reenter currenst scene
-
 
 orderHandler.command('description', (ctx) => {
     //remove /title from message and retrieve only title with regular expression
