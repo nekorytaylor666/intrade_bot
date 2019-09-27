@@ -34,19 +34,19 @@ orderHandler.command('description', (ctx) => {
     const description = retrieveValue('description', str);
     if (description) {
         ctx.session.description = description;
+        // Reenter currenst scene
         return ctx.scene.reenter();
     } else {
         ctx.reply(
             `please input valid description\nexample: /description my awesome description`
         );
     }
-    // Reenter currenst scene
 });
 
 
-orderHandler.command('buy', (ctx) => {
-    ctx.reply('buy buy!');
-    ctx.scene.leave();
+orderHandler.action('cancel', (ctx) => {
+    ctx.reply(`You've canceled input of order. Your input have been cached!`);
+    return ctx.scene.enter('menu');
 });
 
 

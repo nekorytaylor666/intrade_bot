@@ -9,6 +9,22 @@ const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
 const RedisSession = require('telegraf-session-redis');
 const mongoose = require('mongoose');
+const {
+	enter
+} = Stage
+
+
+//routers
+
+//handles database saving of order
+const saveHandler = require('./helpers/saveHandler');
+
+//handles input and exiting from scene
+const orderHandler = require('./helpers/orderHandler');
+
+//handles inline queries in inline mode of bot
+const inlineHandler = require('./helpers/inlineQueryHandler');
+
 
 //mongoose connection
 mongoose.connect('mongodb://localhost:27017/intradeBot', {
@@ -40,30 +56,23 @@ bot.use(session);
 //to accept json data
 app.use(bodyParser.json());
 
-//routers
-
-//handles database saving of order
-const saveHandler = require('./helpers/saveHandler');
-
-//handles input and exiting from scene
-const orderHandler = require('./helpers/orderHandler');
-
-//handles inline queries in inline mode of bot
-const inlineHandler = require('./helpers/inlineQueryHandler');
-
-
+//menu scene
+const menuScene = new Scene('menu');
 
 //order registration scene
-const orderRegistration = new Scene('orderRegistration');
+const orderRegistrationScene = new Scene('orderRegistration');
 
-//handlers init
-orderRegistration.use(saveHandler);
-orderRegistration.use(orderHandler);
+//order handlers init
+orderRegistrationScene.use(saveHandler);
+orderRegistrationScene.use(orderHandler);
+
+
+//inline handler init
 bot.use(inlineHandler);
 
 //Composer cant replicate enter event, so it should be there 
 //TODO move enter event to separate file
-orderRegistration.enter((ctx) => {
+orderRegistrationScene.enter((ctx) => {
 	const title = ctx.session.title ? ctx.session.title : 'none';
 	const description = ctx.session.description ? ctx.session.description : 'none';
 	ctx.reply(
@@ -76,7 +85,18 @@ orderRegistration.enter((ctx) => {
 		example: /title my awesome title.
 	`,
 		Markup.inlineKeyboard([
-			Markup.callbackButton('Save', 'save')
+			Markup.callbackButton('Save', 'save'),
+			Markup.callbackButton('Cancel', 'cancel')
+		]).extra());
+});
+
+//menu scene enter
+menuScene.enter((ctx) => {
+	ctx.reply(
+		`Menu:\nThis bot helps you to find new providers \ninside of Intrade group!`,
+		Markup.inlineKeyboard([
+			Markup.callbackButton('Create new order', 'neworder'),
+			Markup.callbackButton('Check your orders', 'orderlist')
 		]).extra());
 });
 
@@ -84,9 +104,11 @@ app.listen(port, function () {
 	console.log(`Example app listening on port ${port}!`);
 });
 
-const stage = new Stage([orderRegistration]);
+const stage = new Stage([orderRegistrationScene, menuScene], {
+	default: menuScene
+});
 
 bot.use(stage.middleware());
-bot.command('neworder', (ctx) => ctx.scene.enter('orderRegistration'));
-
+bot.action('neworder', enter('orderRegistration'));
+bot.command('start', enter('menu'));
 bot.launch();

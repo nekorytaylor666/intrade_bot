@@ -32,7 +32,7 @@ saveHandler.action('save', async (ctx) => {
 
 saveHandler.command('save', (ctx) => {
     ctx.reply('We saved your order!');
-    return ctx.scene.leave();
+    return ctx.scene.enter('menu');
 });
 
 module.exports = saveHandler;
