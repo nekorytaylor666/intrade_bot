@@ -7,6 +7,8 @@ const bodyParser = require('body-parser');
 const TelegrafInlineMenu = require('telegraf-inline-menu');
 const Stage = require('telegraf/stage');
 const Scene = require('telegraf/scenes/base');
+const Composer = require('telegraf/composer');
+const Markup = require('telegraf/markup');
 const {
 	leave
 } = Stage;
@@ -14,12 +16,11 @@ const {
 const RedisSession = require('telegraf-session-redis');
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost:27017/test', {
+mongoose.connect('mongodb://localhost:27017/intradeBot', {
 		useNewUrlParser: true,
 		useUnifiedTopology: true
 	}).then(() => console.log('mongodb connected...'))
 	.catch(err => console.log(err));
-const Order = require('./models/Order');
 
 //env variables
 const port = process.env.PORT;
@@ -45,39 +46,82 @@ bot.use(session);
 
 
 
-//menu commands
-
-menu.setCommand('start');
-
-menu.simpleButton('I am excited!', 'a', {
-	doFunc: ctx => ctx.reply('As am I!')
-})
-
-bot.use(menu.init());
-
+const saveHandler = require('./helpers/saveHandler')
 
 
 //order registration scene
 
 const orderRegistration = new Scene('orderRegistration');
 
+orderRegistration.use(saveHandler);
+
 orderRegistration.enter((ctx) => {
-	ctx.reply('Enter order title like this [/title I want to buy 20 cameras]');
+	const title = ctx.session.title ? ctx.session.title : 'none';
+	const description = ctx.session.description ? ctx.session.description : 'none';
+	ctx.reply(
+		`This is yours article: 
+		title: ${title}
+		description: ${description}
+		
+
+		to edit any of this fields just type /[name of field] [value of field]
+		example: /title my awesome title.
+	`, Markup.inlineKeyboard([
+			Markup.callbackButton('Save', 'save')
+		]).extra());
 });
 
+const retrieveValue = (ignoreString, str) => {
+	const pattern1 = '(?!';
+	const pattern2 = ')\\b(?![\\s])(.*)';
+
+	const regex = new RegExp(pattern1 + ignoreString + pattern2, 'gi');
+
+	// const regex = /(?!title)\b(?![\s])(.*)/gm;
+	const match = str.match(regex);
+	if (match && match[0] !== "") return match.join('');
+	else return null
+}
+
 orderRegistration.command('title', (ctx) => {
-	//remove /title from message and retrieve only title with regular expression
-	const regex = /(?!title)\b.*/gm;
 	const str = ctx.message.text;
-	//regulars returns array
-	const title = str.match(regex);
-	ctx.state.title = title;
-	ctx.reply(ctx.state.title[0]);
-})
+	const title = retrieveValue('title', str);
+	if (title) {
+		ctx.session.title = title;
+		ctx.scene.reenter();
+	} else {
+		ctx.reply(
+			`please input valid title\nexample: /title my awesome title`
+		);
+	}
+});
+// } else {
+// 	ctx.reply(
+// 		`please input valid title
+// 		example: /title my awesome title`);
+// }
+
+// Reenter currenst scene
+
+
+orderRegistration.command('description', (ctx) => {
+	//remove /title from message and retrieve only title with regular expression
+	const str = ctx.message.text;
+	const description = retrieveValue('description', str);
+	if (description) {
+		ctx.session.description = description;
+		ctx.scene.reenter();
+	} else {
+		ctx.reply(
+			`please input valid description\nexample: /description my awesome description`
+		);
+	}
+	// Reenter currenst scene
+});
 
 orderRegistration.command('buy', (ctx) => {
 	ctx.reply('buy buy!');
-	leave();
+	ctx.scene.leave();
 });
 
 
@@ -157,11 +201,9 @@ app.listen(port, function () {
 	console.log(`Example app listening on port ${port}!`);
 });
 
-const stage = new Stage();
-stage.register(orderRegistration);
+const stage = new Stage([orderRegistration]);
 
 bot.use(stage.middleware());
-
 bot.command('neworder', (ctx) => ctx.scene.enter('orderRegistration'));
 
 
