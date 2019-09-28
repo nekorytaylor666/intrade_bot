@@ -27,7 +27,7 @@ saveHandler.action('save', async (ctx) => {
     }
     ctx.reply(`We saved your order "${ctx.session.title}!"`);
     ctx.session = null;
-    return ctx.scene.leave();
+    return ctx.scene.enter('menu');
 });
 
 saveHandler.command('save', (ctx) => {
