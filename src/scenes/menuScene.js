@@ -10,6 +10,9 @@ const menuScene = new Scene('menu');
 
 //menu scene enter
 menuScene.enter(async (ctx) => {
+    if (typeof ctx.session.user === 'undefined') {
+        return ctx.scene.enter('auth');
+    }
     return ctx.reply('This bot hepls you find new providers or buy something.', Extra.HTML().markup((m) =>
         m.inlineKeyboard([
             m.callbackButton('Create new order', 'neworder'),

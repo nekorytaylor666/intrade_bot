@@ -24,35 +24,51 @@ authScene.on('contact', async ctx => {
     const user_id = ctx.message.from.id;
     const contact_id = ctx.message.from.id;
     if (user_id === contact_id) {
-        const {
-            first_name,
-            last_name,
-        } = ctx.message.from;
-
-        const phone_number = ctx.message.contact.phone_number;
-
-        const newUser = new User({
-            phoneNumber: phone_number,
-            firstName: first_name,
-            lastName: last_name,
-            telegramUserId: user_id,
-            isPremium: false
-        });
-
-        try {
-            await newUser.save();
-        } catch (error) {
-            return ctx.reply('Something went wrong pls request to nekorytaylor2@gmail.com')
-        }
-
-        await ctx.reply(`Thank you ${first_name} you have benn authtorized in intrade bot!`, {
-            reply_markup: {
-                remove_keyboard: true
+        User.findOne({
+            telegramUserId: user_id
+        }, async function (err, user) {
+            if (err) {
+                console.log(err);
             }
-        });
+            //if a user was found, that means the user's email matches the entered email
+            if (user) {
+                ctx.session.user = user;
+                await ctx.reply(`Welcome back ${user.firstName} you have benn authtorized in intrade bot!`, {
+                    reply_markup: {
+                        remove_keyboard: true
+                    }
+                });
+            } else {
+                const {
+                    first_name,
+                    last_name,
+                } = ctx.message.from;
 
-        //go to menu scene
-        return ctx.scene.enter('menu');
+                const phone_number = ctx.message.contact.phone_number;
+
+                const newUser = new User({
+                    phoneNumber: phone_number,
+                    firstName: first_name,
+                    lastName: last_name,
+                    telegramUserId: user_id,
+                    isPremium: false
+                });
+                try {
+                    await newUser.save();
+                    ctx.session.user = newUser;
+
+                    await ctx.reply(`Thank you ${first_name} you have benn authtorized in intrade bot!`, {
+                        reply_markup: {
+                            remove_keyboard: true
+                        }
+                    });
+                } catch (error) {
+                    ctx.reply(`Something went wrong pls request to nekorytaylor2@gmail.com.\n\n ${error}`)
+                }
+
+            }
+            return ctx.scene.enter('menu');
+        });
     } else {
         ctx.reply('You should send your contact number. Use menu keyboard to do it faster');
         return ctx.scene.enter('auth');

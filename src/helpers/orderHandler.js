@@ -31,6 +31,7 @@ orderHandler.command('title', (ctx) => {
 orderHandler.command('description', (ctx) => {
     //remove /title from message and retrieve only title with regular expression
     const str = ctx.message.text;
+    console.log(str);
     const description = retrieveValue('description', str);
     if (description) {
         ctx.session.description = description;
@@ -44,8 +45,8 @@ orderHandler.command('description', (ctx) => {
 });
 
 
-orderHandler.action('cancel', (ctx) => {
-    ctx.reply(`You've canceled input of order. Your input have been cached!`);
+orderHandler.action('cancel', async (ctx) => {
+    await ctx.reply(`You've canceled input of order. Your input have been cached!`);
     return ctx.scene.enter('menu');
 });
 

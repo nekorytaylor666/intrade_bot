@@ -15,7 +15,7 @@ const UserSchema = new Schema({
     },
     lastName: {
         type: String,
-        required: true,
+        required: false,
     },
     phoneNumber: String,
     telegramUserId: String,
