@@ -16,10 +16,13 @@ const {
 
 
 //menu scene
-const menuScene = require('./scenes/menuScene');
+const authScene = require('./scenes/authScene');
 
 //order registration scene
 const orderRegistrationScene = require('./scenes/orderRegScene');
+
+//order registration scene
+const menuScene = require('./scenes/menuScene');
 
 //handles inline queries in inline mode of bot
 const inlineHandler = require('./helpers/inlineQueryHandler');
@@ -61,10 +64,10 @@ app.listen(port, function () {
 	console.log(`Example app listening on port ${port}!`);
 });
 
-const stage = new Stage([orderRegistrationScene, menuScene], {
+const stage = new Stage([orderRegistrationScene, authScene, menuScene], {
 	default: menuScene
 });
 bot.use(stage.middleware());
 bot.action('neworder', enter('orderRegistration'));
-bot.command('start', enter('menu'));
+bot.command('start', enter('auth'));
 bot.launch()
