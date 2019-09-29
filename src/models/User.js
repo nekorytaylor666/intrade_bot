@@ -17,9 +17,7 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     },
-    phoneNumber: [{
-        categoryTitle: String
-    }],
+    phoneNumber: String,
     telegramUserId: String,
     isPremium: {
         type: Boolean,
