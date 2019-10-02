@@ -6,17 +6,21 @@ const authScene = new Scene('auth');
 
 //menu scene enter
 authScene.enter(async (ctx) => {
-    return ctx.reply('Send me your number please', {
-        reply_markup: {
-            keyboard: [
-                [{
-                    text: '📲 Send phone number',
-                    request_contact: true
-                    //ask permission to send their contact number
-                }]
-            ],
-        }
-    });
+    try {
+        ctx.reply('Send me your number please', {
+            reply_markup: {
+                keyboard: [
+                    [{
+                        text: '📲 Send phone number',
+                        request_contact: true
+                        //ask permission to send their contact number
+                    }]
+                ],
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
 });
 
 authScene.on('contact', async ctx => {
@@ -30,7 +34,7 @@ authScene.on('contact', async ctx => {
             if (err) {
                 console.log(err);
             }
-            //if a user was found, that means the user's email matches the entered email
+            //if a user was found we just put him in the session, else we create new one by request
             if (user) {
                 ctx.session.user = user;
                 await ctx.reply(`Welcome back ${user.firstName} you have benn authtorized in intrade bot!`, {
@@ -53,9 +57,10 @@ authScene.on('contact', async ctx => {
                     telegramUserId: user_id,
                     isPremium: false
                 });
+
                 try {
-                    await newUser.save();
-                    ctx.session.user = newUser;
+                    const db_user = await newUser.save();
+                    ctx.session.user = db_user;
 
                     await ctx.reply(`Thank you ${first_name} you have benn authtorized in intrade bot!`, {
                         reply_markup: {
