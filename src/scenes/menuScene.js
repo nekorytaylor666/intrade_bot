@@ -1,24 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Scene = require('telegraf/scenes/base');
-const Extra = require('telegraf/extra')
-const Markup = require('telegraf/markup')
+const Extra = require('telegraf/extra');
+const Markup = require('telegraf/markup');
 
 const menuScene = new Scene('menu');
 
 const checkUserForOutDatingOrders = require('../helpers/activeOrdersChecker');
 
-menuScene.action('neworder', (ctx) => {
-    ctx.editMessageText('This bot hepls you find new providers or buy something.', Extra.HTML().markup(m => m.inlineKeyboard([])));
-    ctx.scene.enter('orderRegistration');
-});
 
-menuScene.action('orderlist', (ctx) => {
-    ctx.editMessageText('This bot hepls you find new providers or buy something.', Extra.HTML().markup(m => m.inlineKeyboard([])));
-    ctx.scene.enter('orders');
-});
+
 
 //menu scene enter
-menuScene.enter(async (ctx) => {
+menuScene.enter((ctx) => {
     if (typeof ctx.session.user === 'undefined') {
         return ctx.scene.enter('auth');
     }
@@ -28,6 +21,15 @@ menuScene.enter(async (ctx) => {
             m.callbackButton('My orders', 'orderlist')
         ])));
 });
+menuScene.action('orderlist', (ctx) => {
+    ctx.editMessageText('This bot hepls you find new providers or buy something.', Extra.HTML().markup(m => m.inlineKeyboard([])));
+    ctx.scene.enter('orders');
+});
+menuScene.action('neworder', (ctx) => {
+    ctx.editMessageText('This bot hepls you find new providers or buy something.', Extra.HTML().markup(m => m.inlineKeyboard([])));
+    ctx.scene.enter('orderRegistration');
+});
+
 
 
 menuScene.command('test', () => {

@@ -4,8 +4,9 @@ require('dotenv').config();
 const Telegraf = require('telegraf');
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('telegraf/session')
 const Stage = require('telegraf/stage');
-const RedisSession = require('telegraf-session-redis');
+// const RedisSession = require('telegraf-session-redis');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
 
@@ -51,13 +52,13 @@ const bot = new Telegraf(apiToken);
 const app = express();
 
 //reddis session
-const session = new RedisSession({
-	store: {
-		host: process.env.TELEGRAM_SESSION_HOST || '127.0.0.1',
-		port: process.env.TELEGRAM_SESSION_PORT || 6379
-	}
-});
-bot.use(session);
+// const session = new RedisSession({
+// 	store: {
+// 		host: process.env.TELEGRAM_SESSION_HOST || '127.0.0.1',
+// 		port: process.env.TELEGRAM_SESSION_PORT || 6379
+// 	}
+// });
+bot.use(session());
 
 
 //to accept json data
@@ -71,10 +72,9 @@ app.listen(port, function () {
 });
 
 const stage = new Stage([orderRegistrationScene, authScene, menuScene, ordersList], {
-	default: menuScene
+	default: 'menuScene'
 });
 bot.use(stage.middleware());
-bot.action('neworder', enter('orderRegistration'));
 bot.command('start', enter('auth'));
 bot.use(Telegraf.log());
 bot.launch();

@@ -2,7 +2,11 @@
 const Scene = require('telegraf/scenes/base');
 const User = require('../models/User');
 const authScene = new Scene('auth');
-
+const Stage = require('telegraf/stage');
+const {
+    enter,
+    leave
+} = Stage;
 
 //menu scene enter
 authScene.enter(async (ctx) => {
@@ -72,11 +76,13 @@ authScene.on('contact', async ctx => {
                 }
 
             }
+            leave();
             return ctx.scene.enter('menu');
+
         });
     } else {
         ctx.reply('You should send your contact number. Use menu keyboard to do it faster');
-        return ctx.scene.enter('auth');
+        return enter('auth');
     }
 
 });
