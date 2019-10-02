@@ -28,7 +28,9 @@ const menuScene = require('./scenes/menuScene');
 //handles inline queries in inline mode of bot
 const inlineHandler = require('./helpers/inlineQueryHandler');
 
-const ordersList = require('./scenes/ordersScene');
+const ordersList = require('./scenes/ordersListScene');
+
+const orders = require('./scenes/orders');
 
 //mongoose connection
 mongoose.connect('mongodb://localhost:27017/intradeBot', {
@@ -71,7 +73,7 @@ app.listen(port, function () {
 	console.log(`Example app listening on port ${port}!`);
 });
 
-const stage = new Stage([orderRegistrationScene, authScene, menuScene, ordersList], {
+const stage = new Stage([orderRegistrationScene, authScene, menuScene, ordersList, orders], {
 	default: 'menuScene'
 });
 bot.use(stage.middleware());

@@ -47,7 +47,7 @@ orderHandler.command('description', (ctx) => {
 
 orderHandler.action('cancel', async (ctx) => {
     await ctx.reply(`You've canceled input of order. Your input have been cached!`);
-    return ctx.scene.enter('menu');
+    return ctx.scene.enter('orders');
 });
 
 

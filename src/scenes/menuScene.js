@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Scene = require('telegraf/scenes/base');
-const Extra = require('telegraf/extra');
-const Markup = require('telegraf/markup');
+const Extra = require('telegraf/extra')
+const Markup = require('telegraf/markup')
 
 const menuScene = new Scene('menu');
 
@@ -15,22 +15,24 @@ menuScene.enter((ctx) => {
     if (typeof ctx.session.user === 'undefined') {
         return ctx.scene.enter('auth');
     }
-    return ctx.reply('This bot hepls you find new providers or buy something.', Extra.HTML().markup((m) =>
-        m.inlineKeyboard([
-            m.callbackButton('Create new order', 'neworder'),
-            m.callbackButton('My orders', 'orderlist')
-        ])));
+    return ctx.reply('Данный бот поможет вам найти поставщиков где и когда угодно.', Markup
+        .keyboard([
+            ['🔍 Заказы'], // Row1 with 2 buttons
+            ['☸ Настройки', '📞 Помощь'], // Row2 with 2 buttons
+            ['⭐️ Оплата', '👥 Контакты'] // Row3 with 3 buttons
+        ])
+        .oneTime()
+        .resize()
+        .extra()
+    );
 });
-menuScene.action('orderlist', (ctx) => {
-    ctx.editMessageText('This bot hepls you find new providers or buy something.', Extra.HTML().markup(m => m.inlineKeyboard([])));
+menuScene.hears('🔍 Заказы', (ctx) => {
     ctx.scene.enter('orders');
 });
-menuScene.action('neworder', (ctx) => {
-    ctx.editMessageText('This bot hepls you find new providers or buy something.', Extra.HTML().markup(m => m.inlineKeyboard([])));
-    ctx.scene.enter('orderRegistration');
-});
-
-
+// menuScene.hears('neworder', (ctx) => {
+//     ctx.editMessageText('This bot hepls you find new providers or buy something.', Extra.HTML().markup(m => m.inlineKeyboard([])));
+//     ctx.scene.enter('orderRegistration');
+// });
 
 menuScene.command('test', () => {
     checkUserForOutDatingOrders();
