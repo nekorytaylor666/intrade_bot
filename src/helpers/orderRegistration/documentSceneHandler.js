@@ -34,6 +34,21 @@ documentStepHandler.action('back', (ctx) => {
 
 documentStepHandler.on('document', (ctx) => {
     ctx.scene.session.fileId = ctx.message.document.file_id;
+    ctx.scene.session.docType = 'doc';
+    ctx.reply('Мы сохранили ваш документ! Теперь нажмите "Далее", чтобы продолжить регистрацию заказа, либо "Назад", чтобы переотправить документ.', Markup
+        .keyboard([
+            ['Далее'],
+            ['Назад'],
+        ])
+        .oneTime()
+        .resize()
+        .extra());
+    return ctx.wizard.next();
+});
+
+documentStepHandler.on('photo', (ctx) => {
+    ctx.scene.session.fileId = ctx.message.photo[1].file_id;
+    ctx.scene.session.docType = 'photo';
     ctx.reply('Мы сохранили ваш документ! Теперь нажмите "Далее", чтобы продолжить регистрацию заказа, либо "Назад", чтобы переотправить документ.', Markup
         .keyboard([
             ['Далее'],
