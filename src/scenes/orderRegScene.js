@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Scene = require('telegraf/scenes/base');
-const Markup = require('telegraf/markup');
-
+const Telegraf = require('telegraf')
+const Composer = require('telegraf/composer')
+const session = require('telegraf/session')
+const Stage = require('telegraf/stage')
+const Markup = require('telegraf/markup')
+const WizardScene = require('telegraf/scenes/wizard')
 
 
 //handles database saving of order
@@ -11,6 +15,8 @@ const saveHandler = require('../helpers/saveHandler');
 const orderHandler = require('../helpers/orderHandler');
 
 const orderRegistrationScene = new Scene('orderRegistration');
+
+
 
 
 orderRegistrationScene.use(saveHandler);

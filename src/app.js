@@ -20,7 +20,7 @@ const checkUserForOutDatingOrders = require('./helpers/activeOrdersChecker');
 const authScene = require('./scenes/authScene');
 
 //order registration scene
-const orderRegistrationScene = require('./scenes/orderRegScene');
+const orderRegistrationScene = require('./scenes/orderRegWizardScene');
 
 //order registration scene
 const menuScene = require('./scenes/menuScene');
@@ -78,7 +78,10 @@ const stage = new Stage([orderRegistrationScene, authScene, menuScene, ordersLis
 });
 bot.use(stage.middleware());
 bot.command('start', enter('auth'));
+bot.use(ctx => {
+	ctx.reply('Ваша сессия истекла. Прошу перезагрузите бота или введите команду /start');
+});
 bot.use(Telegraf.log());
 bot.launch();
 
-cron.schedule('* 12 * * *', checkUserForOutDatingOrders);
+cron.schedule('0 12 * * *', checkUserForOutDatingOrders);

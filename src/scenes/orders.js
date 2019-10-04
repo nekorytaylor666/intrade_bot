@@ -22,7 +22,7 @@ orders.enter(async (ctx) => {
 });
 
 orders.hears('🔍 Добавить заказ', (ctx) => {
-    ctx.scene.enter('orderRegistration');
+    ctx.scene.enter('orderReg');
 });
 orders.hears('☸ Мои заказы', (ctx) => {
     ctx.scene.enter('orderList');
