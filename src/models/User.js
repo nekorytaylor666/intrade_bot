@@ -17,6 +17,14 @@ const UserSchema = new Schema({
         type: String,
         required: false,
     },
+    email: {
+        type: String,
+        required: false
+    },
+    companyName: {
+        type: String,
+        required: false
+    },
     phoneNumber: String,
     telegramUserId: String,
     isPremium: {

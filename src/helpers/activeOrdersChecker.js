@@ -1,8 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Telegram = require('telegraf/telegram')
-
-
-const Order = require('../models/Order');
 const User = require('../models/User');
 
 const daysBetween = (first, second) => {
@@ -19,27 +16,6 @@ const daysBetween = (first, second) => {
     return Math.floor(days);
 
 }
-
-const checkForOutDating = async () => {
-    //TODO сделать функцию которая будет менять это значение в зависимости от подписки пользователя
-    const outDateAmount = 1;
-    const outDatedOrders = [];
-    const cursor = Order.find({
-        isActive: true
-    }).lean().cursor();
-
-    await cursor.eachAsync(doc => {
-        const docDate = new Date(doc.date);
-        const today = new Date();
-        const dayGap = daysBetween(docDate, today);
-        if (dayGap > outDateAmount) {
-            outDatedOrders.push(doc);
-        }
-    });
-    console.log(outDatedOrders);
-    return outDatedOrders;
-}
-
 
 const checkUserForOutDatingOrders = async () => {
     //TODO сделать функцию которая будет менять статус найденных ордеров на false
@@ -75,5 +51,4 @@ const checkUserForOutDatingOrders = async () => {
     }).then(console.log('Рассылка завершена!')).catch(err => console.log(err));
 }
 
-//
 module.exports = checkUserForOutDatingOrders;

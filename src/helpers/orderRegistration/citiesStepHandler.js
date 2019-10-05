@@ -8,12 +8,15 @@ const {
 } = require('telegraf');
 
 const citiesStepHandler = new Composer();
+
 citiesStepHandler.hears('Назад', ctx => {
     ctx.reply(`Вы вернулись на этап 2/3`);
+    ctx.scene.session.fileId = null;
     ctx.wizard.back(); // Set the listener to the previous function
     ctx.wizard.back(); // Set the listener to the previous function
     return ctx.wizard.steps[ctx.wizard.cursor](ctx);
 });
+
 citiesStepHandler.hears('Далее', ctx => {
     ctx.reply(`Этап 3/5
     Еще чуть чуть!
@@ -61,7 +64,8 @@ citiesStepHandler.hears('ok', ctx => {
     const cities = typeof ctx.scene.session.cities !== 'undefined' ? [...ctx.scene.session.cities] : ['Нет городов'];
     ctx.reply(`Ваш окончательный список городов ${cities.map(city=>`${city}`)}!`, Markup
         .keyboard([
-            ['ok']
+            ['Далее'],
+            ['Назад'],
         ])
         .oneTime()
         .resize()
@@ -69,7 +73,7 @@ citiesStepHandler.hears('ok', ctx => {
     return ctx.wizard.next();
 });
 
-citiesStepHandler.hears(/^((ok)$).+$/gm, (ctx) => {
+citiesStepHandler.use((ctx) => {
     ctx.reply('Пожалуйста, используйте меню.');
 });
 

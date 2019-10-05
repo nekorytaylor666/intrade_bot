@@ -6,7 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('telegraf/session')
 const Stage = require('telegraf/stage');
-// const RedisSession = require('telegraf-session-redis');
+const Markup = require('telegraf/markup')
 const mongoose = require('mongoose');
 const cron = require('node-cron');
 
@@ -47,19 +47,11 @@ mongoose.set("debug", (collectionName, method, query, doc) => {
 //env variables
 const port = process.env.PORT;
 const apiToken = process.env.TELEGRAM_TOKEN;
-// const webHookUrl = process.env.WEBHOOK_URL;
 
-//essential inits
+
 const bot = new Telegraf(apiToken);
 const app = express();
 
-//reddis session
-// const session = new RedisSession({
-// 	store: {
-// 		host: process.env.TELEGRAM_SESSION_HOST || '127.0.0.1',
-// 		port: process.env.TELEGRAM_SESSION_PORT || 6379
-// 	}
-// });
 bot.use(session());
 
 
@@ -79,7 +71,13 @@ const stage = new Stage([orderRegistrationScene, authScene, menuScene, ordersLis
 bot.use(stage.middleware());
 bot.command('start', enter('auth'));
 bot.use(ctx => {
-	ctx.reply('Ваша сессия истекла. Прошу перезагрузите бота или введите команду /start');
+	ctx.reply('Ваша сессия истекла. Прошу перезагрузите бота или введите команду /start', Markup
+		.keyboard([
+			['/start'],
+		])
+		.oneTime()
+		.resize()
+		.extra());
 });
 bot.use(Telegraf.log());
 bot.launch();

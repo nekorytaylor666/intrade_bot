@@ -15,29 +15,12 @@ const documentStepHandler = require('../helpers/orderRegistration/documentSceneH
 
 const citiesStepHandler = require('../helpers/orderRegistration/citiesStepHandler');
 
-const orderRegistrationScene = new WizardScene('orderReg', ctx => {
-    try {
-        ctx.reply(`Этап: 1/3
-        Опишите что Вам нужно?
-        
-        Пример: срочно нужны 50 штук видеокамер компании hiwatch, модель B5456, срок поставки до 5 октября, цена до 3000 тенге.
-    
-        Помните что чем подробнее Вы описали свой заказ, тем охотнее поставщики отклинутся на него.`);
-        return ctx.wizard.next();
-    } catch (error) {
-        console.log(error);
-    }
-}, ctx => {
-    ctx.scene.session.description = ctx.message.text;
-    ctx.reply(`Этап 2/3
-        Отлично, теперь можете прикрепить необходимые документы /фото
-        чтобы поставщики лучше поняли Вас либо пропустить этот этап.`, Markup.inlineKeyboard([
-        Markup.callbackButton('Назад', 'back'),
-        Markup.callbackButton('Пропустить шаг', 'next')
-    ]).extra());
-    return ctx.wizard.next();
-}, documentStepHandler, citiesStepHandler, async ctx => {
-    if (typeof ctx.scene.session.fileId !== 'undefined') {
+const contactStepHandler = require('../helpers/orderRegistration/contactStepHandler');
+
+const enterStepsFuncs = require('../helpers/orderRegistration/sideHandlers');
+
+const lastStepFunc = async (ctx) => {
+    if (ctx.scene.session.fileId) {
         const docType = ctx.scene.session.docType;
         const fileId = ctx.scene.session.fileId;
         switch (docType) {
@@ -53,6 +36,15 @@ const orderRegistrationScene = new WizardScene('orderReg', ctx => {
     await ctx.reply('done!');
     ctx.scene.leave();
     ctx.scene.enter('orders');
-});
+}
+
+const orderRegistrationScene = new WizardScene('orderReg',
+    enterStepsFuncs.sceneEnterStep, //first step. Handles input of description but doesn't save it.
+    enterStepsFuncs.docEnterStep, // second. Saves input of desc, then shows interface for documents
+    documentStepHandler, // third. Saves file or handles skip of step
+    citiesStepHandler, //forth. Handles choose of city.
+    contactStepHandler, // fifth. Handles input of contacts
+    lastStepFunc // savings to db and last message of this button
+);
 
 module.exports = orderRegistrationScene;
