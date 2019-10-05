@@ -37,6 +37,9 @@ menuScene.hears('🔍 Заказы', (ctx) => {
 menuScene.command('test', () => {
     checkUserForOutDatingOrders();
 });
+menuScene.use((ctx) => {
+    ctx.reply('Используйте меню.');
+});
 
 
 module.exports = menuScene;

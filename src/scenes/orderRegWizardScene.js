@@ -19,6 +19,8 @@ const contactStepHandler = require('../helpers/orderRegistration/contactStepHand
 
 const enterStepsFuncs = require('../helpers/orderRegistration/sideHandlers');
 
+const confirmationStepHandler = require('../helpers/orderRegistration/lastStepHandler');
+
 const lastStepFunc = async (ctx) => {
     if (ctx.scene.session.fileId) {
         const docType = ctx.scene.session.docType;
@@ -43,7 +45,8 @@ const orderRegistrationScene = new WizardScene('orderReg',
     enterStepsFuncs.docEnterStep, // second. Saves input of desc, then shows interface for documents
     documentStepHandler, // third. Saves file or handles skip of step
     citiesStepHandler, //forth. Handles choose of city.
-    contactStepHandler, // fifth. Handles input of contacts
+    contactStepHandler,
+    confirmationStepHandler, // fifth. Handles input of contacts
     lastStepFunc // savings to db and last message of this button
 );
 
