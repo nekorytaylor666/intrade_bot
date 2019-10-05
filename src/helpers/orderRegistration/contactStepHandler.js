@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Composer = require('telegraf/composer')
 const Markup = require('telegraf/markup')
+const User = require('../../models/User');
 
 
 const contactHandler = new Composer();
@@ -33,8 +34,20 @@ contactHandler.hears('Далее', (ctx) => {
     }).extra());
 });
 
-contactHandler.action('check', (ctx) => {
+contactHandler.action('check', async (ctx) => {
     const user = ctx.session.user;
+    const newUser = new User({
+        phoneNumber: user.phoneNumber,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        telegramUserId: user.telegramUserId,
+        isPremium: false,
+        email: user.email,
+        companyName: user.companyName
+    });
+    const db_user = await newUser.save();
+    ctx.session.user = db_user;
+
     ctx.reply(` Твои контакты 
     для связи:
     Имя: ${user.firstName?user.firstName:'не заполнено'}

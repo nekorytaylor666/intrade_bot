@@ -6,14 +6,20 @@ const userSchema = require('./User').schema;
 
 
 const OrderSchema = new Schema({
-    title: {
-        type: String,
-        required: true,
-    },
     description: {
         type: String,
         required: true,
     },
+    //TODO Сделать популэйт на файл заказа и сделать из этого массив
+    docType: {
+        type: String
+    },
+    fileId: {
+        type: String
+    },
+    cities: [{
+        type: String
+    }],
     categories: [{
         categoryTitle: String
     }],

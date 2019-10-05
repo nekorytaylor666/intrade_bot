@@ -4,12 +4,12 @@ const {
     Extra,
     Markup
 } = require('telegraf');
-const orderList = new Scene('orderList');
+const orderListScene = new Scene('orderList');
 
 const User = require('../models/User');
 
 
-orderList.enter(async (ctx) => {
+orderListScene.enter(async (ctx) => {
     const telegramId = ctx.session.user.telegramUserId;
     const docs = await User.find({
         telegramUserId: telegramId
@@ -17,17 +17,17 @@ orderList.enter(async (ctx) => {
     const user = docs[0];
     const orderList = user.orders;
     ctx.reply(
-        `${orderList.map((order, index) => `${index+1}. ${order.title}: ${order.isActive?'active':'solved'}\n`)}`,
+        `${orderList.map((order, index) => `${index+1}. ${order.description}: ${order.isActive?'active':'solved'}\n`)}`,
         Markup.inlineKeyboard([
             Markup.callbackButton('Leave', 'leave')
         ]).extra()
     );
 });
 
-orderList.action('leave', (ctx) => {
+orderListScene.action('leave', (ctx) => {
     ctx.editMessageText(`
                 i 'm useless`, Extra.HTML().markup(m => m.inlineKeyboard([])));
     return ctx.scene.enter('orders');
 })
 
-module.exports = orderList;
+module.exports = orderListScene;

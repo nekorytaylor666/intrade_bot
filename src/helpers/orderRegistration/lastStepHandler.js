@@ -2,11 +2,39 @@
 const Composer = require('telegraf/composer')
 const Markup = require('telegraf/markup')
 
-
+const Order = require('../../models/Order');
+const User = require('../../models/User');
 
 const lastStep = new Composer();
 
-lastStep.hears('Далее', ctx => {
+lastStep.hears('Далее', async ctx => {
+    const {
+        description,
+        cities,
+    } = ctx.scene.session;
+    const customer = ctx.session.user;
+    const fileId = ctx.scene.session.fileId ? ctx.scene.session.fileId : null;
+    const docType = ctx.scene.session.docType ? ctx.scene.session.docType : null;
+    const telegramId = customer.telegramUserId;
+    try {
+        //изменить структуры запроса для вложенных схем
+        const docs = await User.find({
+            telegramUserId: telegramId
+        }).exec();
+        const user = docs[0];
+        const newOrder = new Order({
+            description: description,
+            customer: user.id,
+            cities: cities,
+            docType: docType,
+            fileId: fileId
+        });
+        user.orders.push(newOrder.id);
+        await user.save();
+        await newOrder.save();
+    } catch (error) {
+        console.log(error);
+    };
     ctx.reply(`Отлично!
     Твой заказ проходит модерацию! Обычно модерация занимает пару часов. 
     Вам придет уведомление как только модератор пропустит заказ.`, Markup.inlineKeyboard([
@@ -52,7 +80,8 @@ lastStep.action('preview', async ctx => {
     }
 });
 
-lastStep.action('menu', ctx => {
+lastStep.action('menu', async ctx => {
+
     ctx.scene.leave();
     ctx.scene.enter('menu');
 });
