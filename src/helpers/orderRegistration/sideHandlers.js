@@ -1,15 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const Composer = require('telegraf/composer')
-const Stage = require('telegraf/stage')
 const Markup = require('telegraf/markup')
-const WizardScene = require('telegraf/scenes/wizard')
-const {
-    Extra
-} = require('telegraf');
-const {
-    enter,
-    leave
-} = Stage
+
 
 const enterStepFunc = (ctx) => {
     try {

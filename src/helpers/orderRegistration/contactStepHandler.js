@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const Composer = require('telegraf/composer')
-const session = require('telegraf/session')
-const Stage = require('telegraf/stage')
 const Markup = require('telegraf/markup')
-const {
-    Extra
-} = require('telegraf');
 
 
 const contactHandler = new Composer();
