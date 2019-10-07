@@ -24,7 +24,7 @@ lastStep.hears('Далее', async ctx => {
         const user = docs[0];
         const newOrder = new Order({
             description: description,
-            customer: user.id,
+            customer: user._id,
             cities: cities,
             docType: docType,
             fileId: fileId

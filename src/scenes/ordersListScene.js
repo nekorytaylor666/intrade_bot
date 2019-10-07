@@ -22,11 +22,12 @@ orderListScene.enter(async (ctx) => {
             Markup.callbackButton('Leave', 'leave')
         ]).extra()
     );
+    ctx.session.orders = orderList;
 });
 
 orderListScene.action('leave', (ctx) => {
-    ctx.editMessageText(`
-                i 'm useless`, Extra.HTML().markup(m => m.inlineKeyboard([])));
+    const orderList = ctx.session.orders;
+    ctx.editMessageText(`${orderList.map((order, index) => `${index+1}. ${order.description}: ${order.isActive?'active':'solved'}\n`)}`, Extra.HTML().markup(m => m.inlineKeyboard([])));
     return ctx.scene.enter('orders');
 })
 

@@ -36,7 +36,8 @@ contactHandler.hears('Далее', (ctx) => {
 
 contactHandler.action('check', async (ctx) => {
     const user = ctx.session.user;
-    const newUser = new User({
+    const updatedUser = new User({
+        _id: user._id,
         phoneNumber: user.phoneNumber,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -45,8 +46,14 @@ contactHandler.action('check', async (ctx) => {
         email: user.email,
         companyName: user.companyName
     });
-    const db_user = await newUser.save();
-    ctx.session.user = db_user;
+    try {
+        await User.updateOne({
+            telegramUserId: user.telegramUserId
+        }, updatedUser);
+        ctx.session.user = updatedUser;
+    } catch (error) {
+        console.log(error);
+    }
 
     ctx.reply(` Твои контакты 
     для связи:

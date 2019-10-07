@@ -33,13 +33,15 @@ const ordersList = require('./scenes/ordersListScene');
 const orders = require('./scenes/orders');
 
 //mongoose connection
-mongoose.connect('mongodb://localhost:27017/intradeBot', {
+mongoose.connect(process.env.MONGO_CONNECTION_STRING, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
-		useCreateIndex: true
+		useCreateIndex: true,
 	})
 	.then(() => console.log('mongodb connected...'))
 	.catch(err => console.log(err));
+
+mongoose.set('useFindAndModify', false);
 
 mongoose.set("debug", (collectionName, method, query, doc) => {
 	console.log(`${collectionName}.${method}`, JSON.stringify(query), doc);
