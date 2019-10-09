@@ -43,6 +43,7 @@ contactHandler.action('check', async (ctx) => {
         lastName: user.lastName,
         telegramUserId: user.telegramUserId,
         isPremium: false,
+        orders: user.orders,
         email: user.email,
         companyName: user.companyName
     });
