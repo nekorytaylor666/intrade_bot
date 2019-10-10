@@ -13,20 +13,20 @@ menuScene.enter(ctx => {
   return ctx.reply(
     'Данный бот поможет вам найти поставщиков где и когда угодно.',
     Markup.keyboard([
-      ['🔍 Заказы'], // Row1 with 2 buttons
-      ['☸ Настройки', '📞 Помощь'], // Row2 with 2 buttons
-      ['⭐️ Оплата', '👥 Контакты'], // Row3 with 3 buttons
+      ['📰 Заказы'], // Row1 with 2 buttons
+      ['☸ Настройки', '❔ Помощь'], // Row2 with 2 buttons
+      ['📈 Оплата', '👥 Контакты'], // Row3 with 3 buttons
     ])
       .oneTime()
       .resize()
       .extra(),
   );
 });
-menuScene.hears('🔍 Заказы', ctx => {
+menuScene.hears('📰 Заказы', ctx => {
   ctx.scene.enter('orders');
 });
 
-menuScene.hears('📞 Помощь', ctx => {
+menuScene.hears('❔ Помощь', ctx => {
   ctx.scene.enter('help');
 });
 

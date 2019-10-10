@@ -7,9 +7,9 @@ orders.enter(async ctx => {
   ctx.reply(
     'Здесь вы можете просмотреть ваши заказы.',
     Markup.keyboard([
-      ['🔍 Добавить заказ'], // Row1 with 2 buttons
-      ['☸ Мои заказы'], // Row2 with 2 buttons
-      ['⭐️ Заказы в работе', '👥 Активные заказы'], // Row3 with 3 buttons
+      ['🆕 Добавить заказ'], // Row1 with 2 buttons
+      ['📃 Мои заказы'], // Row2 with 2 buttons
+      ['⛏ Заказы в работе', '☎️ Активные заказы'], // Row3 with 3 buttons
       ['Главное меню'], // Row3 with 3 buttons
     ])
       .oneTime()
@@ -18,10 +18,10 @@ orders.enter(async ctx => {
   );
 });
 
-orders.hears('🔍 Добавить заказ', ctx => {
+orders.hears('🆕 Добавить заказ', ctx => {
   ctx.scene.enter('orderReg');
 });
-orders.hears('☸ Мои заказы', ctx => {
+orders.hears(' Мои заказы', ctx => {
   ctx.scene.enter('orderList');
 });
 orders.hears('Главное меню', ctx => {

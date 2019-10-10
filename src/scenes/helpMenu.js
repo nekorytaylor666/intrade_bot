@@ -13,10 +13,10 @@ helpScene.enter(ctx => {
   return ctx.reply(
     'Данный бот поможет вам найти поставщиков где и когда угодно.',
     Markup.keyboard([
-      ['О сервисе'], // Row1 with 2 buttons
-      ['Заказчикам', 'Поставщикам'], // Row2 with 2 buttons
-      ['База знаний'], // Row3 with 3 buttons
-      ['Главное меню'], // Row3 with 3 buttons
+      ['💡 О сервисе'], // Row1 with 2 buttons
+      ['🗣 Заказчикам', '👤 Поставщикам'], // Row2 with 2 buttons
+      ['📚 База знаний'], // Row3 with 3 buttons
+      ['⬅️ Главное меню'], // Row3 with 3 buttons
     ])
       .oneTime()
       .resize()
@@ -24,23 +24,23 @@ helpScene.enter(ctx => {
   );
 });
 
-helpScene.hears('О сервисе', ctx => {
+helpScene.hears('💡 О сервисе', ctx => {
   ctx.scene.enter('about');
 });
 
-helpScene.hears('Заказчикам', ctx => {
+helpScene.hears('🗣 Заказчикам', ctx => {
   ctx.scene.enter('forCustomers');
 });
 
-helpScene.hears('Поставщикам', ctx => {
+helpScene.hears('👤 Поставщикам', ctx => {
   ctx.scene.enter('forProviders');
 });
 
-helpScene.hears('База знаний', ctx => {
+helpScene.hears('📚 База знаний', ctx => {
   ctx.scene.enter('faq');
 });
 
-helpScene.hears('Главное меню', ctx => {
+helpScene.hears('⬅️ Главное меню', ctx => {
   ctx.scene.enter('menu');
 });
 

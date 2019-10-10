@@ -77,6 +77,17 @@ citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
       'Aktau',
     ];
     ctx.scene.session.cities = cities;
+    const choosenCitiesInlineButton = cities.map(cityName =>
+      Markup.callbackButton(`✅ ${cityName}`, `city ${cityName}`),
+    );
+    ctx.editMessageText(
+      `Вы выбрали город(-а) ${cities.map(
+        city => `${city}`,
+      )}! Нажмите "ок", чтобы продолжить.`,
+      Markup.inlineKeyboard(choosenCitiesInlineButton, {
+        columns: 1,
+      }).extra(),
+    );
     return ctx.reply(
       `Вы выбрали город(-а) ${cities.map(
         city => `${city}`,
