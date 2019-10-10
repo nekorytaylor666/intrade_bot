@@ -21,7 +21,7 @@ orders.enter(async ctx => {
 orders.hears('🆕 Добавить заказ', ctx => {
   ctx.scene.enter('orderReg');
 });
-orders.hears(' Мои заказы', ctx => {
+orders.hears('📃 Мои заказы', ctx => {
   ctx.scene.enter('orderList');
 });
 orders.hears('Главное меню', ctx => {
