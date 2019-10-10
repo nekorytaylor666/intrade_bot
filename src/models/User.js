@@ -9,36 +9,38 @@ const Schema = mongoose.Schema;
 // user_id
 
 const UserSchema = new Schema({
-    firstName: {
-        type: String,
-        required: true,
+  firstName: {
+    type: String,
+    required: true,
+  },
+  lastName: {
+    type: String,
+    required: false,
+  },
+  email: {
+    type: String,
+    required: false,
+  },
+  companyName: {
+    type: String,
+    required: false,
+  },
+  phoneNumber: String,
+  telegramUserId: String,
+  isPremium: {
+    type: Boolean,
+    default: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now(),
+  },
+  orders: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Order',
     },
-    lastName: {
-        type: String,
-        required: false,
-    },
-    email: {
-        type: String,
-        required: false
-    },
-    companyName: {
-        type: String,
-        required: false
-    },
-    phoneNumber: String,
-    telegramUserId: String,
-    isPremium: {
-        type: Boolean,
-        default: true
-    },
-    date: {
-        type: Date,
-        default: Date.now()
-    },
-    orders: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Order'
-    }]
+  ],
 });
 
 module.exports = mongoose.model('User', UserSchema);
