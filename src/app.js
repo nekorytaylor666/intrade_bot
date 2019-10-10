@@ -14,6 +14,7 @@ const { enter } = Stage;
 
 const checkUserForOutDatingOrders = require('./helpers/activeOrdersChecker');
 
+//TODO mode scene initalizing to another file
 //menu scene
 const authScene = require('./scenes/authScene');
 
@@ -22,6 +23,13 @@ const orderRegistrationScene = require('./scenes/orderRegWizardScene');
 
 //order registration scene
 const menuScene = require('./scenes/menuScene');
+
+//help scene
+const aboutScene = require('./helpers/helpScenes/aboutScene');
+const forCustomers = require('./helpers/helpScenes/forCustomers');
+const forProviders = require('./helpers/helpScenes/forProviders');
+const faq = require('./helpers/helpScenes/faq');
+const helpScene = require('./scenes/helpMenu');
 
 //handles inline queries in inline mode of bot
 const inlineHandler = require('./helpers/inlineQueryHandler');
@@ -69,7 +77,18 @@ app.listen(port, function() {
 });
 
 const stage = new Stage(
-  [orderRegistrationScene, authScene, menuScene, ordersList, orders],
+  [
+    orderRegistrationScene,
+    authScene,
+    menuScene,
+    ordersList,
+    orders,
+    helpScene,
+    forProviders,
+    forCustomers,
+    faq,
+    aboutScene,
+  ],
   {
     default: 'menuScene',
   },

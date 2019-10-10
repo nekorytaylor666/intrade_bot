@@ -5,8 +5,6 @@ const Markup = require('telegraf/markup');
 
 const menuScene = new Scene('menu');
 
-const checkUserForOutDatingOrders = require('../helpers/activeOrdersChecker');
-
 //menu scene enter
 menuScene.enter(ctx => {
   if (typeof ctx.session.user === 'undefined') {
@@ -27,14 +25,11 @@ menuScene.enter(ctx => {
 menuScene.hears('🔍 Заказы', ctx => {
   ctx.scene.enter('orders');
 });
-// menuScene.hears('neworder', (ctx) => {
-//     ctx.editMessageText('This bot hepls you find new providers or buy something.', Extra.HTML().markup(m => m.inlineKeyboard([])));
-//     ctx.scene.enter('orderRegistration');
-// });
 
-menuScene.command('test', () => {
-  checkUserForOutDatingOrders();
+menuScene.hears('📞 Помощь', ctx => {
+  ctx.scene.enter('help');
 });
+
 menuScene.use(ctx => {
   ctx.reply('Используйте меню.');
 });
