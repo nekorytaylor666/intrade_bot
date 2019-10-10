@@ -16,25 +16,6 @@ const enterStepsFuncs = require('../helpers/orderRegistration/sideHandlers');
 
 const confirmationStepHandler = require('../helpers/orderRegistration/lastStepHandler');
 
-const lastStepFunc = async ctx => {
-  if (ctx.scene.session.fileId) {
-    const docType = ctx.scene.session.docType;
-    const fileId = ctx.scene.session.fileId;
-    switch (docType) {
-      case 'doc':
-        await ctx.replyWithDocument(fileId);
-        break;
-      case 'photo':
-        await ctx.replyWithPhoto(fileId);
-      default:
-        break;
-    }
-  }
-  await ctx.reply('done!');
-  ctx.scene.leave();
-  ctx.scene.enter('orders');
-};
-
 const orderRegistrationScene = new WizardScene(
   'orderReg',
   enterStepsFuncs.sceneEnterStep, //first step. Handles input of description but doesn't save it.
@@ -42,8 +23,12 @@ const orderRegistrationScene = new WizardScene(
   documentStepHandler, // third. Saves file or handles skip of step
   citiesStepHandler, //forth. Handles choose of city.
   contactStepHandler,
-  confirmationStepHandler, // fifth. Handles input of contacts
-  lastStepFunc, // savings to db and last message of this button
+  confirmationStepHandler, // savings to db and last message of this button
 );
+
+orderRegistrationScene.hears('Отмена', ctx => {
+  ctx.scene.leave();
+  ctx.scene.enter('orders');
+});
 
 module.exports = orderRegistrationScene;

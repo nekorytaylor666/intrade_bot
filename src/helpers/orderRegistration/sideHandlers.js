@@ -10,7 +10,7 @@ const enterStepFunc = ctx => {
         Пример: срочно нужны 50 штук видеокамер компании hiwatch, модель B5456, срок поставки до 5 октября, цена до 3000 тенге.
     
         Помните что чем подробнее Вы описали свой заказ, тем охотнее поставщики отклинутся на него.`,
-      Markup.keyboard([]),
+      Markup.removeKeyboard().extra(),
     );
     return ctx.wizard.next();
   } catch (error) {
@@ -18,9 +18,9 @@ const enterStepFunc = ctx => {
   }
 };
 
-const documentEnterStepFunc = ctx => {
+const documentEnterStepFunc = async ctx => {
   ctx.scene.session.description = ctx.message.text;
-  ctx.reply(
+  await ctx.reply(
     `Этап 2/3
         Отлично, теперь можете прикрепить необходимые документы /фото
         чтобы поставщики лучше поняли Вас либо пропустить этот этап.`,
@@ -28,6 +28,15 @@ const documentEnterStepFunc = ctx => {
       Markup.callbackButton('Назад', 'back'),
       Markup.callbackButton('Пропустить шаг', 'next'),
     ]).extra(),
+  );
+  await ctx.replyWithPhoto(
+    {
+      source: 'src/static/fileadd.jpg',
+    },
+    {
+      caption:
+        'Если Вы хотите прикрепить документ или фотографию, нажмите на кнопку на Вашей клавиатуре.',
+    },
   );
   return ctx.wizard.next();
 };
