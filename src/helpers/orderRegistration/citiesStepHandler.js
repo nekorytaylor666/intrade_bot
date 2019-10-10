@@ -39,6 +39,33 @@ citiesStepHandler.hears('Далее', ctx => {
   );
 });
 
+/*
+
+const availableCities =  typeof ctx.scene.session.cities !== 'undefined'
+      ? [...ctx.scene.session.availableCities]
+      : [...CITIES];
+newCity = match[0];
+
+availableCities.remove(newCity);
+
+ctx.session.availabelCities = availableCities
+
+ctx.editMessageText(
+'...',
+Markup.inlineKeyboard(
+      choosenCities.map(cityName=>
+         Markup.callbackButton(cityName+'Выбран', `city ${cityName}`)),
+      availabelCities.map(cityName =>
+        Markup.callbackButton(cityName, `city ${cityName}`),
+      ),
+      {
+        columns: 1,
+      },
+    ).extra())
+
+
+*/
+
 citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
   if (ctx.match[0] === 'All') {
     const cities = [
@@ -60,27 +87,52 @@ citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
         .extra(),
     );
   }
+
+  const availableCities =
+    typeof ctx.scene.session.cities !== 'undefined'
+      ? [...ctx.scene.session.availableCities]
+      : [...CITIES];
+
   const cities =
     typeof ctx.scene.session.cities !== 'undefined'
       ? [...ctx.scene.session.cities]
       : [];
-  const newCity = ctx.match[0];
-  cities.indexOf(newCity) === -1
-    ? cities.push(newCity)
-    : ctx.reply(`Вы уже выбрали город ${newCity}`);
+  const choosenCity = ctx.match[0];
+  if (cities.indexOf(choosenCity) === -1) {
+    cities.push(choosenCity);
+    availableCities.splice(availableCities.indexOf(choosenCity), 1);
+  } else {
+    return ctx.reply(`Вы уже выбрали город ${choosenCity}`);
+  }
   ctx.scene.session.cities = cities;
-  return ctx.editMessageText(
+  ctx.scene.session.availableCities = availableCities;
+
+  const choosenCitiesInlineButton = cities.map(cityName =>
+    Markup.callbackButton(`✅ ${cityName}`, `city ${cityName}`),
+  );
+  const availableCitiesInlineButton = availableCities.map(cityName =>
+    Markup.callbackButton(cityName, `city ${cityName}`),
+  );
+
+  ctx.editMessageText(
     `Вы выбрали город(-а) ${cities.map(
       city => `${city}`,
     )}! Нажмите "ок", чтобы продолжить.`,
     Markup.inlineKeyboard(
-      CITIES.map(cityName =>
-        Markup.callbackButton(cityName, `city ${cityName}`),
-      ),
+      choosenCitiesInlineButton.concat(availableCitiesInlineButton),
       {
         columns: 1,
       },
     ).extra(),
+  );
+  return ctx.reply(
+    `Вы выбрали город(-а) ${cities.map(
+      city => `${city}`,
+    )}! Нажмите "ок", чтобы продолжить.`,
+    Markup.keyboard([['ok']])
+      .oneTime()
+      .resize()
+      .extra(),
   );
 });
 
