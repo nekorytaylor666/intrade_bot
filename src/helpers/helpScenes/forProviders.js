@@ -15,7 +15,7 @@ forProviders.enter(async ctx => {
       .extra(),
   );
   ctx.replyWithPhoto({
-    source: `src\\static\\helpImageProviders.jpeg`,
+    source: path.normalize('src\\static\\helpImageProviders.jpeg'),
   });
 });
 

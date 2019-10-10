@@ -2,6 +2,7 @@
 const Scene = require('telegraf/scenes/base');
 const Extra = require('telegraf/extra');
 const Markup = require('telegraf/markup');
+const path = require('path');
 
 const forCustomers = new Scene('forCustomers');
 
@@ -16,7 +17,7 @@ forCustomers.enter(async ctx => {
       .extra(),
   );
   ctx.replyWithPhoto({
-    source: `src\\static\\helpImageCustomers.jpeg`,
+    source: path.normalize('src\\static\\helpImageCustomers.jpeg'),
   });
 });
 
