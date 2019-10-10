@@ -4,6 +4,16 @@ const Markup = require('telegraf/markup');
 
 const citiesStepHandler = new Composer();
 
+const CITIES = [
+  'Astana',
+  'Almaty',
+  'Karagandy',
+  'Shymkent',
+  'Atyrau',
+  'Aktau',
+  'All',
+];
+
 citiesStepHandler.hears('Назад', ctx => {
   ctx.reply(`Вы вернулись на этап 2/3`);
   ctx.scene.session.fileId = null;
@@ -19,15 +29,9 @@ citiesStepHandler.hears('Далее', ctx => {
     
     Выбери необходимый город в котором тебе нужен поставщик`,
     Markup.inlineKeyboard(
-      [
-        Markup.callbackButton('Астана', 'city Astana'),
-        Markup.callbackButton('Алматы', 'city Almaty'),
-        Markup.callbackButton('Караганда', 'city Karagandy'),
-        Markup.callbackButton('Шымкент', 'city Shymkent'),
-        Markup.callbackButton('Атырау', 'city Atyrau'),
-        Markup.callbackButton('Актау', 'city Aktau'),
-        Markup.callbackButton('Все', 'all'),
-      ],
+      CITIES.map(cityName =>
+        Markup.callbackButton(cityName, `city ${cityName}`),
+      ),
       {
         columns: 1,
       },
@@ -36,7 +40,7 @@ citiesStepHandler.hears('Далее', ctx => {
 });
 
 citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
-  if (ctx.match[0] === 'all') {
+  if (ctx.match[0] === 'All') {
     const cities = [
       'Astana',
       'Almaty',
@@ -65,14 +69,18 @@ citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
     ? cities.push(newCity)
     : ctx.reply(`Вы уже выбрали город ${newCity}`);
   ctx.scene.session.cities = cities;
-  return ctx.reply(
+  return ctx.editMessageText(
     `Вы выбрали город(-а) ${cities.map(
       city => `${city}`,
     )}! Нажмите "ок", чтобы продолжить.`,
-    Markup.keyboard([['ok']])
-      .oneTime()
-      .resize()
-      .extra(),
+    Markup.inlineKeyboard(
+      CITIES.map(cityName =>
+        Markup.callbackButton(cityName, `city ${cityName}`),
+      ),
+      {
+        columns: 1,
+      },
+    ).extra(),
   );
 });
 

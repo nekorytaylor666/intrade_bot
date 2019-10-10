@@ -10,6 +10,7 @@ const enterStepFunc = ctx => {
         Пример: срочно нужны 50 штук видеокамер компании hiwatch, модель B5456, срок поставки до 5 октября, цена до 3000 тенге.
     
         Помните что чем подробнее Вы описали свой заказ, тем охотнее поставщики отклинутся на него.`,
+
       Markup.removeKeyboard().extra(),
     );
     return ctx.wizard.next();
@@ -23,20 +24,19 @@ const documentEnterStepFunc = async ctx => {
   await ctx.reply(
     `Этап 2/3
         Отлично, теперь можете прикрепить необходимые документы /фото
-        чтобы поставщики лучше поняли Вас либо пропустить этот этап.`,
-    Markup.inlineKeyboard([
-      Markup.callbackButton('Назад', 'back'),
-      Markup.callbackButton('Пропустить шаг', 'next'),
-    ]).extra(),
+        чтобы поставщики лучше поняли Вас либо пропустить этот этап.
+
+        Если Вы хотите прикрепить документ или фотографию, нажмите на кнопку на Вашей клавиатуре.,
+        `,
   );
   await ctx.replyWithPhoto(
     {
       source: 'src/static/fileadd.jpg',
     },
-    {
-      caption:
-        'Если Вы хотите прикрепить документ или фотографию, нажмите на кнопку на Вашей клавиатуре.',
-    },
+    Markup.inlineKeyboard([
+      Markup.callbackButton('Назад', 'back'),
+      Markup.callbackButton('Пропустить шаг', 'next'),
+    ]).extra(),
   );
   return ctx.wizard.next();
 };

@@ -7,8 +7,8 @@ const { enter, leave } = Stage;
 
 const documentStepHandler = new Composer();
 documentStepHandler.action('next', ctx => {
-  ctx.editMessageText(
-    `Вы пропустили прикрепление документов. Заказчики будет ориентироваться только на описание вашего заказа, что может повлиять на качество его выполнения.`,
+  ctx.editMessageCaption(
+    'Вы пропустили этап приклепления документов.',
     Extra.HTML().markup(m => m.inlineKeyboard([])),
   );
   ctx.reply(
