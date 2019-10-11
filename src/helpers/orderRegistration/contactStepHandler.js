@@ -2,6 +2,7 @@
 const Composer = require('telegraf/composer');
 const Markup = require('telegraf/markup');
 const User = require('../../models/User');
+const { Extra } = require('telegraf');
 
 const contactHandler = new Composer();
 
@@ -73,7 +74,15 @@ contactHandler.action('check', async ctx => {
   } catch (error) {
     console.log(error);
   }
-
+  ctx.editMessageText(
+    createMessage(
+      user.firstName,
+      user.companyName,
+      user.phoneNumber,
+      user.email,
+    ),
+    Extra.HTML().markup(m => m.inlineKeyboard([])),
+  );
   ctx.reply(
     ` Твои контакты 
     для связи:
