@@ -14,30 +14,6 @@ const { enter } = Stage;
 
 const checkUserForOutDatingOrders = require('./helpers/activeOrdersChecker');
 
-//TODO mode scene initalizing to another file
-//menu scene
-const authScene = require('./scenes/authScene');
-
-//order registration scene
-const orderRegistrationScene = require('./scenes/orderRegWizardScene');
-
-//order registration scene
-const menuScene = require('./scenes/menuScene');
-
-//help scene
-const aboutScene = require('./helpers/helpScenes/aboutScene');
-const forCustomers = require('./helpers/helpScenes/forCustomers');
-const forProviders = require('./helpers/helpScenes/forProviders');
-const faq = require('./helpers/helpScenes/faq');
-const helpScene = require('./scenes/helpMenu');
-
-//handles inline queries in inline mode of bot
-const inlineHandler = require('./helpers/inlineQueryHandler');
-
-const ordersList = require('./scenes/ordersListScene');
-
-const orders = require('./scenes/orders');
-
 //mongoose connection
 mongoose
   .connect(process.env.MONGO_CONNECTION_STRING, {
@@ -69,30 +45,12 @@ bot.use(session());
 //to accept json data
 app.use(bodyParser.json());
 
-//inline handler init
-bot.use(inlineHandler);
-
 app.listen(port, function() {
   console.log(`Example app listening on port ${port}!`);
 });
 
-const stage = new Stage(
-  [
-    orderRegistrationScene,
-    authScene,
-    menuScene,
-    ordersList,
-    orders,
-    helpScene,
-    forProviders,
-    forCustomers,
-    faq,
-    aboutScene,
-  ],
-  {
-    default: 'menuScene',
-  },
-);
+const stage = require('./tools/stageInit');
+
 bot.use(stage.middleware());
 bot.command('start', enter('auth'));
 bot.use(ctx => {

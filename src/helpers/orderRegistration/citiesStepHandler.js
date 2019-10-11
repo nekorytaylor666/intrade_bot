@@ -39,33 +39,6 @@ citiesStepHandler.hears('Далее', ctx => {
   );
 });
 
-/*
-
-const availableCities =  typeof ctx.scene.session.cities !== 'undefined'
-      ? [...ctx.scene.session.availableCities]
-      : [...CITIES];
-newCity = match[0];
-
-availableCities.remove(newCity);
-
-ctx.session.availabelCities = availableCities
-
-ctx.editMessageText(
-'...',
-Markup.inlineKeyboard(
-      choosenCities.map(cityName=>
-         Markup.callbackButton(cityName+'Выбран', `city ${cityName}`)),
-      availabelCities.map(cityName =>
-        Markup.callbackButton(cityName, `city ${cityName}`),
-      ),
-      {
-        columns: 1,
-      },
-    ).extra())
-
-
-*/
-
 citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
   if (ctx.match[0] === 'All') {
     const cities = [
@@ -109,12 +82,17 @@ citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
       ? [...ctx.scene.session.cities]
       : [];
   const choosenCity = ctx.match[0];
-  if (cities.indexOf(choosenCity) === -1) {
+  const indexOfChoosenCity = cities.indexOf(choosenCity);
+
+  if (indexOfChoosenCity === -1) {
     cities.push(choosenCity);
     availableCities.splice(availableCities.indexOf(choosenCity), 1);
-  } else {
-    return ctx.reply(`Вы уже выбрали город ${choosenCity}`);
   }
+  if (indexOfChoosenCity !== -1) {
+    cities.splice(indexOfChoosenCity, 1);
+    availableCities.push(choosenCity);
+  }
+
   ctx.scene.session.cities = cities;
   ctx.scene.session.availableCities = availableCities;
 
@@ -126,9 +104,10 @@ citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
   );
 
   ctx.editMessageText(
-    `Вы выбрали город(-а) ${cities.map(
-      city => `${city}`,
-    )}! Нажмите "ок", чтобы продолжить.`,
+    `Этап 3/5
+    Еще чуть чуть!
+    
+    Выбери необходимый город в котором тебе нужен поставщик`,
     Markup.inlineKeyboard(
       choosenCitiesInlineButton.concat(availableCitiesInlineButton),
       {
@@ -137,21 +116,24 @@ citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
     ).extra(),
   );
   return ctx.reply(
-    `Вы выбрали город(-а) ${cities.map(
-      city => `${city}`,
-    )}! Нажмите "ок", чтобы продолжить.`,
-    Markup.keyboard([['ok']])
+    `Город(-а):${cities.map(city => `${city}`)}!`,
+    Markup.keyboard([['🆗 Ок']])
       .oneTime()
       .resize()
       .extra(),
   );
 });
 
-citiesStepHandler.hears('ok', ctx => {
+citiesStepHandler.hears('🆗 Ок', ctx => {
   const cities =
     typeof ctx.scene.session.cities !== 'undefined'
       ? [...ctx.scene.session.cities]
       : ['Нет городов'];
+  if (cities.length < 1) {
+    return ctx.reply(
+      'Должен быть выбран по меньшей мере один город!',
+    );
+  }
   ctx.reply(
     `Ваш окончательный список городов ${cities.map(
       city => `${city}`,

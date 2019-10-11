@@ -7,11 +7,14 @@ const User = require('../models/User');
 
 orderListScene.enter(async ctx => {
   const telegramId = ctx.session.user.telegramUserId;
+
   const docs = await User.find({
     telegramUserId: telegramId,
   }).populate('orders');
+
   const user = docs[0];
   const orderList = user.orders;
+
   ctx.reply(
     `${orderList.map(
       (order, index) =>
@@ -28,6 +31,7 @@ orderListScene.enter(async ctx => {
 
 orderListScene.action('leave', ctx => {
   const orderList = ctx.session.orders;
+
   ctx.editMessageText(
     `${orderList.map(
       (order, index) =>
