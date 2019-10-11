@@ -11,7 +11,6 @@ const CITIES = [
   'Shymkent',
   'Atyrau',
   'Aktau',
-  'All',
 ];
 
 citiesStepHandler.hears('Назад', ctx => {
@@ -23,14 +22,29 @@ citiesStepHandler.hears('Назад', ctx => {
 });
 
 citiesStepHandler.hears('Далее', ctx => {
+  const choosenCities =
+    typeof ctx.scene.session.cities !== 'undefined'
+      ? [...ctx.scene.session.cities]
+      : [];
+  const availableCities =
+    typeof ctx.scene.session.availableCities !== 'undefined'
+      ? [...ctx.scene.session.availableCities]
+      : [...CITIES];
+  const choosenCitiesInlineButton = choosenCities.map(cityName =>
+    Markup.callbackButton(`✅ ${cityName}`, `city ${cityName}`),
+  );
+  const availableCitiesInlineButton = availableCities.map(cityName =>
+    Markup.callbackButton(cityName, `city ${cityName}`),
+  );
   ctx.reply(
     `Этап 3/5
     Еще чуть чуть!
     
     Выбери необходимый город в котором тебе нужен поставщик`,
     Markup.inlineKeyboard(
-      CITIES.map(cityName =>
-        Markup.callbackButton(cityName, `city ${cityName}`),
+      choosenCitiesInlineButton.concat(
+        availableCitiesInlineButton,
+        Markup.callbackButton(`All`, `city All`),
       ),
       {
         columns: 1,
@@ -41,28 +55,35 @@ citiesStepHandler.hears('Далее', ctx => {
 
 citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
   if (ctx.match[0] === 'All') {
-    const cities = [
-      'Astana',
-      'Almaty',
-      'Karagandy',
-      'Shymkent',
-      'Atyrau',
-      'Aktau',
-    ];
-    ctx.scene.session.cities = cities;
-    const choosenCitiesInlineButton = cities.map(cityName =>
+    const choosenCities = [...CITIES];
+    const availableCities = [];
+
+    ctx.scene.session.cities = choosenCities;
+    ctx.scene.session.availableCities = availableCities;
+
+    const availableCitiesInlineButton = availableCities.map(
+      cityName => Markup.callbackButton(cityName, `city ${cityName}`),
+    );
+    const choosenCitiesInlineButton = choosenCities.map(cityName =>
       Markup.callbackButton(`✅ ${cityName}`, `city ${cityName}`),
     );
     ctx.editMessageText(
-      `Вы выбрали город(-а) ${cities.map(
-        city => `${city}`,
-      )}! Нажмите "ок", чтобы продолжить.`,
-      Markup.inlineKeyboard(choosenCitiesInlineButton, {
-        columns: 1,
-      }).extra(),
+      `Этап 3/5
+      Еще чуть чуть!
+        
+      Выбери необходимый город в котором тебе нужен поставщик`,
+      Markup.inlineKeyboard(
+        choosenCitiesInlineButton.concat(
+          availableCitiesInlineButton,
+          Markup.callbackButton(`All`, `city All`),
+        ),
+        {
+          columns: 1,
+        },
+      ).extra(),
     );
     return ctx.reply(
-      `Вы выбрали город(-а) ${cities.map(
+      `Вы выбрали город(-а) ${choosenCities.map(
         city => `${city}`,
       )}! Нажмите "ок", чтобы продолжить.`,
       Markup.keyboard([['ok']])
@@ -73,7 +94,7 @@ citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
   }
 
   const availableCities =
-    typeof ctx.scene.session.cities !== 'undefined'
+    typeof ctx.scene.session.availableCities !== 'undefined'
       ? [...ctx.scene.session.availableCities]
       : [...CITIES];
 
@@ -109,7 +130,10 @@ citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
     
     Выбери необходимый город в котором тебе нужен поставщик`,
     Markup.inlineKeyboard(
-      choosenCitiesInlineButton.concat(availableCitiesInlineButton),
+      choosenCitiesInlineButton.concat(
+        availableCitiesInlineButton,
+        Markup.callbackButton(`All`, `city All`),
+      ),
       {
         columns: 1,
       },

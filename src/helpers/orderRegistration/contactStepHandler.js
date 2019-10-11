@@ -42,6 +42,13 @@ contactHandler.hears('Далее', ctx => {
   );
 });
 
+contactHandler.hears('Назад', ctx => {
+  ctx.wizard.back();
+  ctx.wizard.back();
+  ctx.wizard.back();
+  return ctx.wizard.steps[1](ctx);
+});
+
 contactHandler.action('check', async ctx => {
   const user = ctx.session.user;
   const updatedUser = new User({
@@ -156,15 +163,7 @@ contactHandler.hears(/email (.+)/i, ctx => {
   );
 });
 
-contactHandler.hears('Назад', ctx => {
-  ctx.scene.session.cities = [];
-  ctx.wizard.back();
-  ctx.wizard.back();
-  ctx.wizard.back();
-  return ctx.wizard.steps[1](ctx);
-});
 contactHandler.use(ctx => {
   ctx.reply(`Пожалуйста, используйте меню.`);
 });
-
 module.exports = contactHandler;
