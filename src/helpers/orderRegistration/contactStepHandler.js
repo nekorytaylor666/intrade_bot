@@ -144,23 +144,32 @@ contactHandler.hears(/phone (.+)/i, ctx => {
     ).extra(),
   );
 });
+
+function validateEmail(email) {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
 contactHandler.hears(/email (.+)/i, ctx => {
-  ctx.session.user.email = ctx.match[1];
-  const user = ctx.session.user;
-  ctx.reply(
-    createMessage(
-      user.firstName,
-      user.companyName,
-      user.phoneNumber,
-      user.email,
-    ),
-    Markup.inlineKeyboard(
-      [Markup.callbackButton('Все верно', 'check')],
-      {
-        columns: 1,
-      },
-    ).extra(),
-  );
+  const email = ctx.match[1];
+  if (validateEmail(email)) {
+    ctx.session.user.email = ctx.match[1];
+    const user = ctx.session.user;
+    return ctx.reply(
+      createMessage(
+        user.firstName,
+        user.companyName,
+        user.phoneNumber,
+        user.email,
+      ),
+      Markup.inlineKeyboard(
+        [Markup.callbackButton('Все верно', 'check')],
+        {
+          columns: 1,
+        },
+      ).extra(),
+    );
+  }
+  return ctx.reply('Введите действительный почтовый адрес!');
 });
 
 contactHandler.use(ctx => {

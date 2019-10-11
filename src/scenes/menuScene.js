@@ -22,7 +22,14 @@ menuScene.enter(ctx => {
       .extra(),
   );
 });
-menuScene.hears('📰 Заказы', ctx => {
+menuScene.hears('📰 Заказы', async ctx => {
+  const user = ctx.session.user;
+  if (!user.companyName || !user.email) {
+    await ctx.reply(
+      'Для добавления заказа вы должны ввести недостающие контакты в настройках, это обязательная часть.',
+    );
+    return ctx.scene.enter('contactEdit');
+  }
   ctx.scene.enter('orders');
 });
 
