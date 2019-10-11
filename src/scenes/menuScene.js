@@ -26,6 +26,10 @@ menuScene.hears('📰 Заказы', ctx => {
   ctx.scene.enter('orders');
 });
 
+menuScene.hears('☸ Настройки', ctx => {
+  ctx.scene.enter('settings');
+});
+
 menuScene.hears('❔ Помощь', ctx => {
   ctx.scene.enter('help');
 });

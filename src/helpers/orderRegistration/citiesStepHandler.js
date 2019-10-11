@@ -86,7 +86,7 @@ citiesStepHandler.action(/(?![city])\b(?!\s)([\w]*)/gm, ctx => {
       `Вы выбрали город(-а) ${choosenCities.map(
         city => `${city}`,
       )}! Нажмите "ок", чтобы продолжить.`,
-      Markup.keyboard([['ok']])
+      Markup.keyboard([['🆗 Ок']])
         .oneTime()
         .resize()
         .extra(),
