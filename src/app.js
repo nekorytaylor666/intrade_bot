@@ -64,5 +64,5 @@ bot.use(ctx => {
 });
 bot.use(Telegraf.log());
 bot.launch();
-
+//Время стоит по немецкему. Зависит от часового пояса сервера
 cron.schedule('0 12 * * *', checkUserForOutDatingOrders);

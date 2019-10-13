@@ -28,6 +28,7 @@ const checkUserForOutDatingOrders = async () => {
   //TODO сделать функцию которая будет менять статус найденных ордеров на false
   const telegram = new Telegram(process.env.TELEGRAM_TOKEN);
   //amount of days after order become outdated
+  //TODO change this value for something more reliable
   const outDateAmount = 0;
   const cursor = User.find({
     isPremium: false,
@@ -56,7 +57,7 @@ const checkUserForOutDatingOrders = async () => {
           await telegram.sendMessage(
             user.telegramUserId,
             `This orders are outdated please upgrade your account to premium to continue finding provider:\n${outDatedOrders.map(
-              (doc, index) => `${index + 1}.${doc.title}\n`,
+              (doc, index) => `${index + 1}.${doc.description}\n`,
             )}`,
           );
         }
