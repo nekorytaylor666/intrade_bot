@@ -21,7 +21,7 @@ documentStepHandler.action('next', ctx => {
   return ctx.wizard.next();
 });
 documentStepHandler.action('back', ctx => {
-  ctx.editMessageText(
+  ctx.editMessageCaption(
     `Вы вернулись на этап 1/3`,
     Extra.HTML().markup(m => m.inlineKeyboard([])),
   );
