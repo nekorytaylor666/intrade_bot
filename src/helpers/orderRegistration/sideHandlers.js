@@ -21,7 +21,15 @@ const enterStepFunc = ctx => {
 };
 
 const documentEnterStepFunc = async ctx => {
-  ctx.scene.session.description = ctx.message.text;
+  try {
+    ctx.scene.session.description = ctx.message.text;
+  } catch (error) {
+    ctx.reply(
+      'Произошло что-то непредвиденное вы будете перенесены в меню.',
+    );
+    ctx.scene.leave();
+    ctx.scene.enter('menu');
+  }
   await ctx.reply(
     `Этап 2/3
         Отлично, теперь можете прикрепить необходимые документы /фото
