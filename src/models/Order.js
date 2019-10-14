@@ -29,7 +29,7 @@ const OrderSchema = new Schema({
   photoUrl: String,
   isActive: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   date: {
     type: Date,

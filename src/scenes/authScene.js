@@ -7,30 +7,19 @@ const { enter, leave } = Stage;
 
 //menu scene enter
 authScene.enter(async ctx => {
-  const chatType = ctx.message.chat.type;
-  try {
-    if (chatType !== 'group') {
-      ctx.reply('Send me your number please', {
-        reply_markup: {
-          keyboard: [
-            [
-              {
-                text: '📲 Send phone number',
-                request_contact: true,
-                //ask permission to send their contact number
-              },
-            ],
-          ],
-        },
-      });
-    }
-    if (chatType === 'group') {
-      ctx.reply(`i'm alive!`);
-    }
-  } catch (error) {
-    console.log(error);
-    ctx.scene.leave();
-  }
+  ctx.reply('Send me your number please', {
+    reply_markup: {
+      keyboard: [
+        [
+          {
+            text: '📲 Send phone number',
+            request_contact: true,
+            //ask permission to send their contact number
+          },
+        ],
+      ],
+    },
+  });
 });
 
 authScene.on('contact', async ctx => {

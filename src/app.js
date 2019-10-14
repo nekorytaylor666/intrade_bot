@@ -14,6 +14,8 @@ const { enter } = Stage;
 
 const checkUserForOutDatingOrders = require('./helpers/activeOrdersChecker');
 
+const adminGroupHandler = require('./helpers/adminGroupHandlers/adminGroupHandlers');
+
 //mongoose connection
 mongoose
   .connect(process.env.MONGO_CONNECTION_STRING, {
@@ -52,15 +54,33 @@ app.listen(port, function() {
 const stage = require('./tools/stageInit');
 
 bot.use(stage.middleware());
-bot.command('start', enter('auth'));
+bot.use(adminGroupHandler);
+bot.command('start', ctx => {
+  const chatType = ctx.message.chat.type;
+  if (chatType === 'private') {
+    return ctx.scene.enter('auth');
+  }
+  if (chatType === 'group') {
+    //TODO get rid of this shit.
+    ctx.reply(`i'm alive!`);
+  }
+});
+
 bot.use(ctx => {
-  ctx.reply(
-    'Ваша сессия истекла. Прошу перезагрузите бота или введите команду /start',
-    Markup.keyboard([['/start']])
-      .oneTime()
-      .resize()
-      .extra(),
-  );
+  if (ctx.message) {
+    const chatType = ctx.message.chat.type;
+
+    if (chatType === 'group') {
+      return ctx.reply(`I cant't handle this command`);
+    }
+    ctx.reply(
+      'Ваша сессия истекла. Прошу перезагрузите бота или введите команду /start',
+      Markup.keyboard([['/start']])
+        .oneTime()
+        .resize()
+        .extra(),
+    );
+  }
 });
 bot.use(Telegraf.log());
 bot.launch();

@@ -7,6 +7,55 @@ const User = require('../../models/User');
 
 const lastStep = new Composer();
 
+const sendToAdminGroup = async ctx => {
+  const description = ctx.scene.session.description;
+  const adminGroupId = -process.env.ADMIN_GROUP_CHAT_ID;
+  const cities = ctx.scene.session.cities;
+  const customer = ctx.session.user;
+  await ctx.telegram.sendMessage(
+    adminGroupId,
+    `Описание:
+    ${description}
+    
+    В городе(-ах): ${cities.map(city => `${city}`)}
+    
+    Контакты для связи:
+    Имя: ${customer.firstName ? customer.firstName : 'не заполнено'}
+    Компания: ${
+      customer.companyName ? customer.companyName : 'не заполнено'
+    }
+    Телефон: ${
+      customer.phoneNumber ? customer.phoneNumber : 'не заполнено'
+    }
+    E-mail: ${customer.email ? customer.email : 'не заполнено'}`,
+    Markup.inlineKeyboard(
+      [
+        Markup.callbackButton(
+          'Все верно',
+          `check ${ctx.session.savedOrder._id}`,
+        ),
+      ],
+      {
+        columns: 1,
+      },
+    ).extra(),
+  );
+
+  if (ctx.scene.session.fileId) {
+    const docType = ctx.scene.session.docType;
+    const fileId = ctx.scene.session.fileId;
+    switch (docType) {
+      case 'doc':
+        await ctx.telegram.sendDocument(adminGroupId, fileId);
+        break;
+      case 'photo':
+        await ctx.telegram.sendPhoto(adminGroupId, fileId);
+      default:
+        break;
+    }
+  }
+};
+
 lastStep.hears('Далее', async ctx => {
   const { description, cities } = ctx.scene.session;
   const customer = ctx.session.user;
@@ -32,10 +81,12 @@ lastStep.hears('Далее', async ctx => {
     });
     user.orders.push(newOrder.id);
     await user.save();
-    await newOrder.save();
+    const savedOrder = await newOrder.save();
+    ctx.session.savedOrder = savedOrder;
   } catch (error) {
     console.log(error);
   }
+  await sendToAdminGroup(ctx);
   ctx.reply(
     `Отлично!
     Твой заказ проходит модерацию! Обычно модерация занимает пару часов. 
