@@ -12,10 +12,14 @@ adminGroupHandler.action(/check (.+)/i, async ctx => {
   const approveAdmin = ctx.callbackQuery.from.username;
   const orderId = ctx.match[1];
   try {
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate('customer');
     order.isActive = true;
     await order.save();
-
+    const telegramId = order.customer.telegramUserId;
+    ctx.telegram.sendMessage(
+      telegramId,
+      `Закак на "${order.description}"\nБыл подтвержден администратором.`,
+    );
     ctx.editMessageReplyMarkup({
       inline_keyboard: [
         [
@@ -36,10 +40,14 @@ adminGroupHandler.action(/cancel (.+)/i, async ctx => {
   const approveAdmin = ctx.callbackQuery.from.username;
   const orderId = ctx.match[1];
   try {
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate('customer');
     order.isActive = false;
     await order.save();
-
+    const telegramId = order.customer.telegramUserId;
+    ctx.telegram.sendMessage(
+      telegramId,
+      `Закак на "${order.description}"\nБыл отменен администратором.`,
+    );
     ctx.editMessageReplyMarkup({
       inline_keyboard: [
         [

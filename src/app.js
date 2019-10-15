@@ -82,6 +82,9 @@ bot.use(ctx => {
     );
   }
 });
+bot.catch(err => {
+  console.log(err);
+});
 bot.use(Telegraf.log());
 bot.launch();
 //Время стоит по немецкему. Зависит от часового пояса сервера
