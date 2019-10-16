@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "start": "concurrently \"node src/app.js\" \"node providerAproveBot/app.js\""
   },
   "keywords": [],
   "author": "",
@@ -16,15 +17,18 @@
     "@types/node-telegram-bot-api": "^0.31.0",
     "axios": "^0.19.0",
     "body-parser": "^1.19.0",
+    "concurrently": "^5.0.0",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
     "mongoose": "^5.7.1",
     "node-cron": "^2.0.3",
     "node-telegram-bot-api": "^0.30.0",
+    "shorturl": "0.0.3",
     "telegraf": "^3.32.0",
     "telegraf-flow": "^8.3.0",
     "telegraf-inline-menu": "^3.6.2",
     "telegraf-session-redis": "^5.1.0",
+    "turl": "^1.1.2",
     "typescript": "^3.6.3"
   },
   "devDependencies": {

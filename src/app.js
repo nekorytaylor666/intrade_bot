@@ -15,7 +15,6 @@ const { enter } = Stage;
 const checkUserForOutDatingOrders = require('./helpers/activeOrdersChecker');
 
 const adminGroupHandler = require('./helpers/adminGroupHandlers/adminGroupHandlers');
-
 //mongoose connection
 mongoose
   .connect(process.env.MONGO_CONNECTION_STRING, {
@@ -23,7 +22,7 @@ mongoose
     useUnifiedTopology: true,
     useCreateIndex: true,
   })
-  .then(() => console.log('mongodb connected...'))
+  .then(() => console.log('Intrade BOT: mongodb connected...'))
   .catch(err => console.log(err));
 
 mongoose.set('useFindAndModify', false);
@@ -36,7 +35,7 @@ mongoose.set('debug', (collectionName, method, query, doc) => {
   );
 });
 //env variables
-const port = process.env.PORT;
+const port = process.env.APPROVE_PORT;
 const apiToken = process.env.TELEGRAM_TOKEN;
 
 const bot = new Telegraf(apiToken);
@@ -48,7 +47,7 @@ bot.use(session());
 app.use(bodyParser.json());
 
 app.listen(port, function() {
-  console.log(`Example app listening on port ${port}!`);
+  console.log(`Intrade BOT: Example app listening on port ${port}!`);
 });
 
 const stage = require('./tools/stageInit');
