@@ -95,7 +95,7 @@ adminGroupHandler.action(/send (.+)/i, async ctx => {
     const shortUrl = await deepLinkCreator(orderId);
     ctx.telegram.sendMessage(
       officialChannelId,
-      `${order.description}\n${order.customer.firstName}\n${order.customer.companyName}`,
+      `Описание заказа: ${order.description}\nИмя: ${order.customer.firstName}\nКомпания: ${order.customer.companyName}`,
       Markup.inlineKeyboard(
         [Markup.urlButton(`Откликнуться`, shortUrl)],
         {
