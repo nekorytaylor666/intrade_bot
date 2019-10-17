@@ -30,7 +30,7 @@ providerRequestHandler.action(/callback (.+)/i, async ctx => {
       `Вы не можете отправлять запрос на исполнение на свой же заказ.`,
     );
   }
-  if (!requestExists && !isSameUser) {
+  if (!requestExists) {
     const providerRequest = new ProviderRequest({
       provider: user.id,
       order: orderId,

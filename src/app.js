@@ -37,7 +37,7 @@ mongoose.set('debug', (collectionName, method, query, doc) => {
   );
 });
 //env variables
-const port = process.env.APPROVE_PORT;
+const port = process.env.PORT;
 const apiToken = process.env.TELEGRAM_TOKEN;
 
 const bot = new Telegraf(apiToken);
