@@ -4,6 +4,7 @@ const Markup = require('telegraf/markup');
 
 const Order = require('../../models/Order');
 const User = require('../../models/User');
+const { Extra } = require('telegraf');
 
 const lastStep = new Composer();
 
@@ -12,22 +13,65 @@ const sendToAdminGroup = async ctx => {
   const adminGroupId = -process.env.ADMIN_GROUP_CHAT_ID;
   const cities = ctx.scene.session.cities;
   const customer = ctx.session.user;
+  const message = `
+Описание:
+${description}
+
+В городе(-ах): ${cities.map(city => `${city}`)}
+
+Контакты для связи:
+Имя: ${customer.firstName ? customer.firstName : 'не заполнено'}
+Компания: ${
+    customer.companyName ? customer.companyName : 'не заполнено'
+  }
+Телефон: ${
+    customer.phoneNumber ? customer.phoneNumber : 'не заполнено'
+  }
+E-mail: ${customer.email ? customer.email : 'не заполнено'}`;
+
+  if (ctx.scene.session.fileId) {
+    const docType = ctx.scene.session.docType;
+    const fileId = ctx.scene.session.fileId;
+    switch (docType) {
+      case 'doc':
+        return await ctx.telegram.sendDocument(adminGroupId, fileId, {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: 'Все верно',
+                  callback_data: `check ${ctx.session.savedOrder._id}`,
+                  hide: true,
+                },
+              ],
+            ],
+          },
+          caption: message,
+        });
+        break;
+      case 'photo':
+        return await ctx.telegram.sendPhoto(adminGroupId, fileId, {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: 'Все верно',
+                  callback_data: `check ${ctx.session.savedOrder._id}`,
+                  hide: true,
+                },
+              ],
+            ],
+          },
+          caption: message,
+        });
+      default:
+        break;
+    }
+  }
+
   await ctx.telegram.sendMessage(
     adminGroupId,
-    `Описание:
-    ${description}
-    
-    В городе(-ах): ${cities.map(city => `${city}`)}
-    
-    Контакты для связи:
-    Имя: ${customer.firstName ? customer.firstName : 'не заполнено'}
-    Компания: ${
-      customer.companyName ? customer.companyName : 'не заполнено'
-    }
-    Телефон: ${
-      customer.phoneNumber ? customer.phoneNumber : 'не заполнено'
-    }
-    E-mail: ${customer.email ? customer.email : 'не заполнено'}`,
+    message,
     Markup.inlineKeyboard(
       [
         Markup.callbackButton(
@@ -40,20 +84,6 @@ const sendToAdminGroup = async ctx => {
       },
     ).extra(),
   );
-
-  if (ctx.scene.session.fileId) {
-    const docType = ctx.scene.session.docType;
-    const fileId = ctx.scene.session.fileId;
-    switch (docType) {
-      case 'doc':
-        await ctx.telegram.sendDocument(adminGroupId, fileId);
-        break;
-      case 'photo':
-        await ctx.telegram.sendPhoto(adminGroupId, fileId);
-      default:
-        break;
-    }
-  }
 };
 
 lastStep.hears('Далее', async ctx => {
@@ -87,9 +117,9 @@ lastStep.hears('Далее', async ctx => {
     console.log(error);
   }
   await sendToAdminGroup(ctx);
+  await ctx.reply('Отлично!', Extra.markup(Markup.removeKeyboard()));
   ctx.reply(
-    `Отлично!
-    Твой заказ проходит модерацию! Обычно модерация занимает пару часов. 
+    `Твой заказ проходит модерацию! Обычно модерация занимает пару часов. 
     Вам придет уведомление как только модератор пропустит заказ.`,
     Markup.inlineKeyboard(
       [

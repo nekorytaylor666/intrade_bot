@@ -14,6 +14,8 @@ const { enter } = Stage;
 
 const checkUserForOutDatingOrders = require('./helpers/activeOrdersChecker');
 
+const providerRequestHandler = require('./helpers/channelHandler/providerRequestHandler');
+
 const adminGroupHandler = require('./helpers/adminGroupHandlers/adminGroupHandlers');
 //mongoose connection
 mongoose
@@ -54,6 +56,8 @@ const stage = require('./tools/stageInit');
 
 bot.use(stage.middleware());
 bot.use(adminGroupHandler);
+bot.use(providerRequestHandler);
+
 bot.command('start', ctx => {
   const chatType = ctx.message.chat.type;
   if (chatType === 'private') {

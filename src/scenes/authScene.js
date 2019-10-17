@@ -7,12 +7,12 @@ const { enter, leave } = Stage;
 
 //menu scene enter
 authScene.enter(async ctx => {
-  ctx.reply('Send me your number please', {
+  ctx.reply('Отправьте ваш номер телефона', {
     reply_markup: {
       keyboard: [
         [
           {
-            text: '📲 Send phone number',
+            text: '📲 Отправить номер телефона',
             request_contact: true,
             //ask permission to send their contact number
           },
@@ -39,7 +39,7 @@ authScene.on('contact', async ctx => {
         if (user) {
           ctx.session.user = user;
           await ctx.reply(
-            `Welcome back ${user.firstName} you have benn authtorized in intrade bot!`,
+            `С возвращением, ${user.firstName}! Вы авторизованы в intrade bot!`,
             {
               reply_markup: {
                 remove_keyboard: true,
@@ -64,7 +64,7 @@ authScene.on('contact', async ctx => {
             ctx.session.user = db_user;
 
             await ctx.reply(
-              `Thank you ${first_name} you have benn authtorized in intrade bot!`,
+              `Добро пожаловать, ${first_name}! Вы зарегистрированы intrade bot!`,
               {
                 reply_markup: {
                   remove_keyboard: true,
@@ -73,7 +73,7 @@ authScene.on('contact', async ctx => {
             );
           } catch (error) {
             ctx.reply(
-              `Something went wrong pls request to nekorytaylor2@gmail.com.\n\n ${error}`,
+              `Что-то пошло не так прошу обратитесь на данный почтовый адрес с вашей ошибкой nekorytaylor2@gmail.com.\n\n ${error}`,
             );
           }
         }
@@ -83,7 +83,7 @@ authScene.on('contact', async ctx => {
     );
   } else {
     ctx.reply(
-      'You should send your contact number. Use menu keyboard to do it faster',
+      'Отправьте ваш номер телефона. Для этого вы можете использовать меню.',
     );
     return enter('auth');
   }

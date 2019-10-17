@@ -66,45 +66,99 @@ adminGroupHandler.action(/cancel (.+)/i, async ctx => {
   }
 });
 
-const deepLinkCreator = async orderId => {
-  const botProviderUsername = process.env.BOT_PROVIDER_USERNAME;
-  const baseUrl = `https://telegram.me/${botProviderUsername}?start=${orderId}`;
-  //у телеграмма есть ограничение по url не больше 64 байт. Так что нужно его укорачивать.
-  const shortUrl = await turl.shorten(baseUrl);
-  return shortUrl;
+const sendFileWithCaption = async (
+  ctx,
+  channelId,
+  fileId,
+  docType,
+  message,
+  orderId,
+) => {
+  switch (docType) {
+    case 'doc':
+      return await ctx.telegram.sendDocument(channelId, fileId, {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: 'Откликнуться',
+                callback_data: `callback ${orderId}`,
+                hide: false,
+              },
+            ],
+          ],
+        },
+        caption: message,
+      });
+      break;
+    case 'photo':
+      return await ctx.telegram.sendPhoto(channelId, fileId, {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: 'Откликнуться',
+                callback_data: `callback ${orderId}`,
+                hide: false,
+              },
+            ],
+          ],
+        },
+        caption: message,
+      });
+    default:
+      break;
+  }
 };
 
 adminGroupHandler.action(/send (.+)/i, async ctx => {
   const approveAdmin = ctx.callbackQuery.from.username;
   const orderId = ctx.match[1];
-  try {
-    const order = await Order.findById(orderId).populate('customer');
-    order.isActive = false;
-    await order.save();
-    ctx.editMessageReplyMarkup({
-      inline_keyboard: [
-        [
-          Markup.callbackButton(
-            `Отправлено в общий канал ${approveAdmin}`,
-            `nothing`,
-          ),
-        ],
+
+  const order = await Order.findById(orderId).populate('customer');
+  order.isActive = false;
+  await order.save();
+
+  ctx.editMessageReplyMarkup({
+    inline_keyboard: [
+      [
+        Markup.callbackButton(
+          `Отправлено в общий канал ${approveAdmin}`,
+          `nothing`,
+        ),
       ],
-    });
-    const officialChannelId = -process.env.OFFICIAL_CHANNEL_CHAT_ID;
-    const shortUrl = await deepLinkCreator(orderId);
+    ],
+  });
+
+  const message = `Описание заказа: ${order.description}\nИмя: ${order.customer.firstName}\nКомпания: ${order.customer.companyName}`;
+  const officialChannelId = -process.env.OFFICIAL_CHANNEL_CHAT_ID;
+
+  if (order.fileId) {
+    return await sendFileWithCaption(
+      ctx,
+      officialChannelId,
+      order.fileId,
+      order.docType,
+      message,
+      orderId,
+    );
+  }
+  if (!order.fileId) {
     ctx.telegram.sendMessage(
       officialChannelId,
-      `Описание заказа: ${order.description}\nИмя: ${order.customer.firstName}\nКомпания: ${order.customer.companyName}`,
+      message,
       Markup.inlineKeyboard(
-        [Markup.urlButton(`Откликнуться`, shortUrl)],
+        [
+          Markup.callbackButton(
+            `Откликнуться`,
+            `callback ${orderId}`,
+          ),
+        ],
         {
           columns: 1,
         },
       ).extra(),
     );
-  } catch (error) {
-    console.log(error);
   }
 });
 module.exports = adminGroupHandler;
