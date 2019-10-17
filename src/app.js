@@ -17,6 +17,13 @@ const checkUserForOutDatingOrders = require('./helpers/activeOrdersChecker');
 const providerRequestHandler = require('./helpers/channelHandler/providerRequestHandler');
 
 const adminGroupHandler = require('./helpers/adminGroupHandlers/adminGroupHandlers');
+
+const basicHandler = require('./helpers/botBasicHandlers');
+
+const providerFillHandler = require('./helpers/providerFillHandler/providerFillHandler');
+
+const stage = require('./tools/stageInit');
+
 //mongoose connection
 mongoose
   .connect(process.env.MONGO_CONNECTION_STRING, {
@@ -52,39 +59,12 @@ app.listen(port, function() {
   console.log(`Intrade BOT: Example app listening on port ${port}!`);
 });
 
-const stage = require('./tools/stageInit');
-
 bot.use(stage.middleware());
 bot.use(adminGroupHandler);
 bot.use(providerRequestHandler);
+bot.use(basicHandler);
+bot.use(providerFillHandler);
 
-bot.command('start', ctx => {
-  const chatType = ctx.message.chat.type;
-  if (chatType === 'private') {
-    return ctx.scene.enter('auth');
-  }
-  if (chatType === 'group') {
-    //TODO get rid of this shit.
-    ctx.reply(`i'm alive!`);
-  }
-});
-
-bot.use(ctx => {
-  if (ctx.message) {
-    const chatType = ctx.message.chat.type;
-
-    if (chatType === 'group') {
-      return ctx.reply(`I cant't handle this command`);
-    }
-    ctx.reply(
-      'Ваша сессия истекла. Прошу перезагрузите бота или введите команду /start',
-      Markup.keyboard([['/start']])
-        .oneTime()
-        .resize()
-        .extra(),
-    );
-  }
-});
 bot.catch(err => {
   console.log(err);
 });

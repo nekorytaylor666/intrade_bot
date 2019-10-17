@@ -3,6 +3,8 @@ const Scene = require('telegraf/scenes/base');
 const Extra = require('telegraf/extra');
 const Markup = require('telegraf/markup');
 
+const providerFillHandler = require('../helpers/providerFillHandler/providerFillHandler');
+
 const menuScene = new Scene('menu');
 
 //menu scene enter
@@ -40,6 +42,8 @@ menuScene.hears('☸ Настройки', ctx => {
 menuScene.hears('❔ Помощь', ctx => {
   ctx.scene.enter('help');
 });
+
+menuScene.use(providerFillHandler);
 
 menuScene.use(ctx => {
   ctx.reply('Используйте меню.');

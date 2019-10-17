@@ -41,6 +41,7 @@ const UserSchema = new Schema({
       ref: 'Order',
     },
   ],
+  telegramUsername: String,
 });
 
 module.exports = mongoose.model('User', UserSchema);

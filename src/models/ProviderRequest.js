@@ -12,6 +12,14 @@ const ProviderRequest = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Order',
   },
+  confirmed: {
+    type: Boolean,
+    default: false,
+  },
+  date: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 module.exports = mongoose.model('ProviderRequest', ProviderRequest);

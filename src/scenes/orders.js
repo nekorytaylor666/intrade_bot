@@ -24,6 +24,9 @@ orders.hears('🆕 Добавить заказ', ctx => {
 orders.hears('📃 Мои заказы', ctx => {
   ctx.scene.enter('orderList');
 });
+orders.hears('☎️ Активные заказы', ctx => {
+  ctx.reply('Активные заказы');
+});
 orders.hears('Главное меню', ctx => {
   ctx.scene.enter('menu');
 });

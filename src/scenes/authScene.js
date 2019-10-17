@@ -47,7 +47,11 @@ authScene.on('contact', async ctx => {
             },
           );
         } else {
-          const { first_name, last_name } = ctx.message.from;
+          const {
+            first_name,
+            last_name,
+            username,
+          } = ctx.message.from;
 
           const phone_number = ctx.message.contact.phone_number;
 
@@ -55,6 +59,7 @@ authScene.on('contact', async ctx => {
             phoneNumber: phone_number,
             firstName: first_name,
             lastName: last_name,
+            telegramUsername: username,
             telegramUserId: user_id,
             isPremium: false,
           });

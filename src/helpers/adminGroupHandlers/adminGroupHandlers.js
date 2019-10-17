@@ -2,7 +2,6 @@
 const Composer = require('telegraf/composer');
 const Markup = require('telegraf/markup');
 const Order = require('../../models/Order');
-const turl = require('turl');
 
 const adminGroupHandler = new Composer();
 
@@ -14,6 +13,7 @@ adminGroupHandler.action(/check (.+)/i, async ctx => {
     const order = await Order.findById(orderId).populate('customer');
     order.isActive = true;
     await order.save();
+
     const telegramId = order.customer.telegramUserId;
     ctx.telegram.sendMessage(
       telegramId,
@@ -116,8 +116,6 @@ adminGroupHandler.action(/send (.+)/i, async ctx => {
   const orderId = ctx.match[1];
 
   const order = await Order.findById(orderId).populate('customer');
-  order.isActive = false;
-  await order.save();
 
   ctx.editMessageReplyMarkup({
     inline_keyboard: [
