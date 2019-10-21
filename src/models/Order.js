@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -38,6 +37,10 @@ const OrderSchema = new Schema({
   customer: {
     type: Schema.Types.ObjectId,
     ref: 'User',
+  },
+  callbackClicks: {
+    type: Number,
+    default: 0,
   },
 });
 

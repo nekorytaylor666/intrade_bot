@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const Markup = require('telegraf/markup');
 const Composer = require('telegraf/composer');
 

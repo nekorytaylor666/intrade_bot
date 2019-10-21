@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const Scene = require('telegraf/scenes/base');
 const Extra = require('telegraf/extra');
 const Markup = require('telegraf/markup');

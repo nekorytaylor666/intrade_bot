@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 require('dotenv').config();
 //package imports
 const Telegraf = require('telegraf');

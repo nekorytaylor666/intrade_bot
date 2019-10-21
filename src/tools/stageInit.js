@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const Stage = require('telegraf/stage');
 
 //TODO implement inline handler

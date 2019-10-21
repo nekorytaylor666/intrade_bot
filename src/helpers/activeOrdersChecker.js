@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const Telegram = require('telegraf/telegram');
 const User = require('../models/User');
 

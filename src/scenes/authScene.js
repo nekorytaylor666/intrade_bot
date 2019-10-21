@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const Scene = require('telegraf/scenes/base');
 const User = require('../models/User');
 const authScene = new Scene('auth');

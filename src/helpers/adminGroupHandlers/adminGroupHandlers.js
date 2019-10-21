@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const Composer = require('telegraf/composer');
 const Markup = require('telegraf/markup');
 const Order = require('../../models/Order');

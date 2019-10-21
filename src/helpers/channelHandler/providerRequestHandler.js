@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const Composer = require('telegraf/composer');
 const Markup = require('telegraf/markup');
 const User = require('../../models/User');
@@ -65,53 +64,58 @@ providerRequestHandler.action(/callback (.+)/i, async ctx => {
     provider: user.id,
     order: orderId,
   });
-  if (requestExists) {
-    return ctx.answerCbQuery(
-      `Вы уже отправляли запрос на этот заказ.`,
+
+  if (!process.env.DEBUG) {
+    if (requestExists) {
+      return ctx.answerCbQuery(
+        `Вы уже отправляли запрос на этот заказ.`,
+      );
+    }
+    if (isSameUser) {
+      return ctx.answerCbQuery(
+        `Вы не можете отправлять запрос на исполнение на свой же заказ.`,
+      );
+    }
+  }
+
+  const providerRequest = new ProviderRequest({
+    provider: user.id,
+    order: orderId,
+  });
+  await providerRequest.save();
+  order.callbackClicks++;
+  await order.save();
+  ctx.answerCbQuery(
+    `Перейдите в приватный чат с ботом для продолжения заполнения заявки на исполнение.`,
+  );
+  const message = `${order.description}\nДля получения прямых контактов заказчика, вам предварительно нужно описать условия исполнения заказа. Нажмите на кнопку для получения указаний.`;
+
+  if (order.fileId) {
+    sendFileWithCaption(
+      ctx,
+      userTelegramId,
+      order.fileId,
+      order.docType,
+      message,
+      orderId,
     );
   }
-  // if (isSameUser) {
-  //   return ctx.answerCbQuery(
-  //     `Вы не можете отправлять запрос на исполнение на свой же заказ.`,
-  //   );
-  // }
-  if (!requestExists) {
-    const providerRequest = new ProviderRequest({
-      provider: user.id,
-      order: orderId,
-    });
-    await providerRequest.save();
-    ctx.answerCbQuery(
-      `Перейдите в приватный чат с ботом для продолжения заполнения заявки на исполнение.`,
+  if (!order.fileId) {
+    ctx.telegram.sendMessage(
+      userTelegramId,
+      message,
+      Markup.inlineKeyboard(
+        [
+          Markup.callbackButton(
+            `Заполнить заявку`,
+            `fill ${orderId}`,
+          ),
+        ],
+        {
+          columns: 1,
+        },
+      ).extra(),
     );
-    const message = `${order.description}\nДля получения прямых контактов заказчика, вам предварительно нужно описать условия исполнения заказа. Нажмите на кнопку для получения указаний.`;
-    if (order.fileId) {
-      sendFileWithCaption(
-        ctx,
-        userTelegramId,
-        order.fileId,
-        order.docType,
-        message,
-        orderId,
-      );
-    }
-    if (!order.fileId) {
-      ctx.telegram.sendMessage(
-        userTelegramId,
-        message,
-        Markup.inlineKeyboard(
-          [
-            Markup.callbackButton(
-              `Заполнить заявку`,
-              `fill ${orderId}`,
-            ),
-          ],
-          {
-            columns: 1,
-          },
-        ).extra(),
-      );
-    }
   }
 });
 
