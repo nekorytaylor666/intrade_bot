@@ -25,10 +25,14 @@ const helpScene = require('../scenes/helpMenu');
 const settingsMenu = require('../scenes/settingsMenu');
 const contactEditScene = require('../helpers/settingsScenes/contactEditScene');
 
+//provider fill scene
+const providerFillScene = require('../scenes/providerFillScene');
+
 const stage = new Stage(
   [
     orderRegistrationScene,
     authScene,
+    providerFillScene,
     menuScene,
     ordersList,
     settingsMenu,

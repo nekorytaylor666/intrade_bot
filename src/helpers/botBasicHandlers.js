@@ -13,6 +13,25 @@ basicHandler.command('start', ctx => {
     ctx.reply(`i'm alive!`);
   }
 });
+basicHandler.on('callback_query', ctx => {
+  if (!ctx.user) {
+    ctx.answerCbQuery(
+      'Невозможно обработать для неавторизанного пользователя',
+    );
+    ctx.reply(
+      'Для продолжения работы запустите бота командой /start',
+      Markup.keyboard([['/start']])
+        .oneTime()
+        .resize()
+        .extra(),
+    );
+  }
+  if (ctx.user) {
+    ctx.answerCbQuery(
+      'Невозможно обработать данную команду для данного контекста',
+    );
+  }
+});
 
 basicHandler.use(ctx => {
   if (ctx.message) {
@@ -22,7 +41,7 @@ basicHandler.use(ctx => {
       return ctx.reply(`I cant't handle this command`);
     }
     ctx.reply(
-      'Ваша сессия истекла. Прошу перезагрузите бота или введите команду /start',
+      'Для продолжения работы запустите бота командой /start',
       Markup.keyboard([['/start']])
         .oneTime()
         .resize()

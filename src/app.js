@@ -4,12 +4,8 @@ const Telegraf = require('telegraf');
 const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('telegraf/session');
-const Stage = require('telegraf/stage');
-const Markup = require('telegraf/markup');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
-
-const { enter } = Stage;
 
 const checkUserForOutDatingOrders = require('./helpers/activeOrdersChecker');
 

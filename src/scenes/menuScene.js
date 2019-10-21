@@ -1,5 +1,4 @@
 const Scene = require('telegraf/scenes/base');
-const Extra = require('telegraf/extra');
 const Markup = require('telegraf/markup');
 
 const providerFillHandler = require('../helpers/providerFillHandler/providerFillHandler');
@@ -43,6 +42,12 @@ menuScene.hears('❔ Помощь', ctx => {
 });
 
 menuScene.use(providerFillHandler);
+
+menuScene.on('callback_query', ctx => {
+  ctx.answerCbQuery(
+    'Невозможно обработать данную команду для данного контекста',
+  );
+});
 
 menuScene.use(ctx => {
   ctx.reply('Используйте меню.');

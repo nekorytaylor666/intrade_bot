@@ -1,10 +1,10 @@
 const Composer = require('telegraf/composer');
-const Markup = require('telegraf/markup');
-
 const providerFillHandler = new Composer();
 
 providerFillHandler.action(/fill (.+)/i, ctx => {
-  ctx.reply(ctx.match[1]);
+  ctx.answerCbQuery(`Выполните все шаги для отправки заявки`);
+  ctx.session.providerRequestId = ctx.match[1];
+  ctx.scene.enter('providerFillScene');
 });
 
 module.exports = providerFillHandler;
