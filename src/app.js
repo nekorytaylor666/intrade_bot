@@ -65,5 +65,5 @@ bot.catch(err => {
 });
 bot.use(Telegraf.log());
 bot.launch();
-//Время стоит по немецкему. Зависит от часового пояса сервера
+//Время стоит по корейскому. Зависит от часового пояса сервера
 cron.schedule('0 12 * * *', checkUserForOutDatingOrders);
