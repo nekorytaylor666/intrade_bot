@@ -11,8 +11,10 @@ sendHandler.hears('Отмена', ctx => {
 });
 
 sendHandler.on('text', async ctx => {
-  const photos = ctx.scene.session.photos;
-  const docs = ctx.scene.session.docs;
+  const photos = ctx.scene.session.photos
+    ? ctx.scene.session.photos
+    : [];
+  const docs = ctx.scene.session.docs ? ctx.scene.session.docs : [];
   const providerRequestId = ctx.session.providerRequestId;
   try {
     const providerRequest = await ProviderRequest.findById(
