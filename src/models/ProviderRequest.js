@@ -10,6 +10,10 @@ const ProviderRequest = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Order',
   },
+  isSended: {
+    type: Boolean,
+    default: false,
+  },
   confirmed: {
     type: Boolean,
     default: false,

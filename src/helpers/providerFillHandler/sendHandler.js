@@ -1,6 +1,7 @@
 const Composer = require('telegraf/composer');
 const Markup = require('telegraf/markup');
 const ProviderRequest = require('../../models/ProviderRequest');
+const Order = require('../../models/Order');
 const sendHandler = new Composer();
 
 sendHandler.hears('Отмена', ctx => {
@@ -16,31 +17,40 @@ sendHandler.on('text', async ctx => {
   try {
     const providerRequest = await ProviderRequest.findById(
       providerRequestId,
-    )
-      .populate('order')
-      .populate('provider');
+    ).populate('provider');
 
-    const customerTelegramId =
-      providerRequest.provider.telegramUserId;
+    const order = await Order.findById(
+      providerRequest.order._id,
+    ).populate('customer');
+    const provider = providerRequest.provider;
+    const customerTelegramId = order.customer.telegramUserId;
 
-    if (photos) {
+    if (photos.length > 0) {
       await ctx.telegram.sendMediaGroup(customerTelegramId, photos);
-      await ctx.telegram.sendMessage(
-        customerTelegramId,
-        ctx.scene.session.description,
-        Markup.inlineKeyboard(
-          [
-            Markup.callbackButton(
-              `Одобрить`,
-              `accept ${providerRequestId}`,
-            ),
-          ],
-          {
-            columns: 1,
-          },
-        ).extra(),
-      );
     }
+    if (docs.length > 0) {
+      await docs.forEach(async doc => {
+        ctx.telegram.sendDocument(customerTelegramId, doc.media);
+      });
+    }
+    await ctx.telegram.sendMessage(
+      customerTelegramId,
+      `Заявка на исполнение от @${provider.telegramUsername}:\n${ctx.scene.session.description}`,
+      Markup.inlineKeyboard(
+        [
+          Markup.callbackButton(
+            `Одобрить`,
+            `accept ${providerRequestId}`,
+          ),
+        ],
+        {
+          columns: 1,
+        },
+      ).extra(),
+    );
+
+    providerRequest.isSended = true;
+    await providerRequest.save();
   } catch (error) {
     ctx.reply(`Обратитесь к @akmt_dev c кодом ошибки: ${error}`);
   }

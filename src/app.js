@@ -17,6 +17,8 @@ const basicHandler = require('./helpers/botBasicHandlers');
 
 const providerFillHandler = require('./helpers/providerFillHandler/providerFillHandler');
 
+const acceptRequestHandler = require('./helpers/acceptHandler/acceptHandler');
+
 const stage = require('./tools/stageInit');
 
 //mongoose connection
@@ -57,6 +59,7 @@ app.listen(port, function() {
 bot.use(stage.middleware());
 bot.use(adminGroupHandler);
 bot.use(providerRequestHandler);
+bot.use(acceptRequestHandler);
 bot.use(basicHandler);
 bot.use(providerFillHandler);
 

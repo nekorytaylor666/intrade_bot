@@ -42,6 +42,10 @@ const OrderSchema = new Schema({
     type: Number,
     default: 0,
   },
+  status: {
+    type: String,
+    default: 'Moderating',
+  },
 });
 
 module.exports = mongoose.model('Order', OrderSchema);

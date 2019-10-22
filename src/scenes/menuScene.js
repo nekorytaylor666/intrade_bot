@@ -2,6 +2,7 @@ const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
 
 const providerFillHandler = require('../helpers/providerFillHandler/providerFillHandler');
+const acceptHandler = require('../helpers/acceptHandler/acceptHandler');
 
 const menuScene = new Scene('menu');
 
@@ -42,6 +43,7 @@ menuScene.hears('❔ Помощь', ctx => {
 });
 
 menuScene.use(providerFillHandler);
+menuScene.use(acceptHandler);
 
 menuScene.on('callback_query', ctx => {
   ctx.answerCbQuery(

@@ -11,6 +11,7 @@ adminGroupHandler.action(/check (.+)/i, async ctx => {
   try {
     const order = await Order.findById(orderId).populate('customer');
     order.isActive = true;
+    order.status = 'Public';
     await order.save();
 
     const telegramId = order.customer.telegramUserId;
