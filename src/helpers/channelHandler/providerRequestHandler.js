@@ -12,7 +12,7 @@ const sendFileWithCaption = async (
   fileId,
   docType,
   message,
-  orderId,
+  providerRequestId,
 ) => {
   switch (docType) {
     case 'doc':
@@ -22,7 +22,7 @@ const sendFileWithCaption = async (
             [
               {
                 text: 'Заполнить заявку',
-                callback_data: `fill ${orderId}`,
+                callback_data: `fill ${providerRequestId}`,
                 hide: false,
               },
             ],
@@ -38,7 +38,7 @@ const sendFileWithCaption = async (
             [
               {
                 text: 'Заполнить заявку',
-                callback_data: `fill ${orderId}`,
+                callback_data: `fill ${providerRequestId}`,
                 hide: false,
               },
             ],
@@ -97,7 +97,7 @@ providerRequestHandler.action(/callback (.+)/i, async ctx => {
       order.fileId,
       order.docType,
       message,
-      orderId,
+      providerRequest.id,
     );
   }
   if (!order.fileId) {
