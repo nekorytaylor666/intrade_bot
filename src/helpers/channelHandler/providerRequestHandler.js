@@ -64,18 +64,19 @@ providerRequestHandler.action(/callback (.+)/i, async ctx => {
     provider: user.id,
     order: orderId,
   });
-
-  if (!process.env.DEBUG) {
-    if (requestExists) {
-      return ctx.answerCbQuery(
-        `Вы уже отправляли запрос на этот заказ.`,
-      );
-    }
-    if (isSameUser) {
-      return ctx.answerCbQuery(
-        `Вы не можете отправлять запрос на исполнение на свой же заказ.`,
-      );
-    }
+  if (order.status === 'Proccesing') {
+    ctx.answerCbQuery('Заказ уже нашел исполнителя.');
+    return ctx.deleteMessage();
+  }
+  if (requestExists) {
+    return ctx.answerCbQuery(
+      `Вы уже отправляли запрос на этот заказ.`,
+    );
+  }
+  if (isSameUser) {
+    return ctx.answerCbQuery(
+      `Вы не можете отправлять запрос на исполнение на свой же заказ.`,
+    );
   }
 
   const providerRequest = new ProviderRequest({
