@@ -1,5 +1,17 @@
 const Telegram = require('telegraf/telegram');
 const User = require('../models/User');
+const Order = require('../models/Order');
+
+const deleteMessageFromChannel = (order, ctx) => {
+  const msgId = order.channelMsgId;
+  const channelId = -process.env.OFFICIAL_CHANNEL_CHAT_ID;
+  try {
+    return ctx.telegram.deleteMessage(channelId, msgId);
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
 
 const daysBetween = (first, second) => {
   // Copy date parts of the timestamps, discarding the time parts.
@@ -23,7 +35,7 @@ const daysBetween = (first, second) => {
   return Math.floor(days);
 };
 
-const checkUserForOutDatingOrders = async () => {
+const checkUserForOutDatingOrders = async ctx => {
   //TODO сделать функцию которая будет менять статус найденных ордеров на false
   const telegram = new Telegram(process.env.TELEGRAM_TOKEN);
   //amount of days after order become outdated
@@ -38,24 +50,32 @@ const checkUserForOutDatingOrders = async () => {
 
   cursor
     .eachAsync(async user => {
-      const orders = user.orders;
+      const orders = await Order.find({ customer: user._id });
       const outDatedOrders = [];
       //check every order of user if its outdated then make list from it
       orders.map(order => {
-        const orderDate = new Date(order.date);
-        const today = new Date();
-        const dayGap = daysBetween(orderDate, today);
-        if (dayGap > outDateAmount) {
-          return outDatedOrders.push(order);
+        if (order.status !== 'Outdated') {
+          const orderDate = new Date(order.date);
+          const today = new Date();
+          const dayGap = daysBetween(orderDate, today);
+          if (dayGap >= outDateAmount) {
+            return outDatedOrders.push(order);
+          }
         }
       });
       //TODO change the tg message
       try {
         //if there any outdated orders send notification in telegram
         if (outDatedOrders.length > 0) {
+          outDatedOrders.forEach(order => {
+            order.status = 'Outdated';
+            order.isActive = false;
+            deleteMessageFromChannel(order, ctx);
+            order.save();
+          });
           await telegram.sendMessage(
             user.telegramUserId,
-            `This orders are outdated please upgrade your account to premium to continue finding provider:\n${outDatedOrders.map(
+            `Эти заказы были удалены из канала. Для того, чтобы их вернуть просим вас приобрести премиум подписку.:\n${outDatedOrders.map(
               (doc, index) => `${index + 1}.${doc.description}\n`,
             )}`,
           );

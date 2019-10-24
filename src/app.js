@@ -50,11 +50,13 @@ const app = express();
 bot.use(session());
 
 //to accept json data
-app.use(bodyParser.json());
 
+app.use(bodyParser.json());
 app.listen(port, function() {
   console.log(`Intrade BOT: Example app listening on port ${port}!`);
 });
+
+bot.command('test', ctx => checkUserForOutDatingOrders(ctx));
 
 bot.use(stage.middleware());
 bot.use(adminGroupHandler);
@@ -62,7 +64,6 @@ bot.use(providerRequestHandler);
 bot.use(acceptRequestHandler);
 bot.use(basicHandler);
 bot.use(providerFillHandler);
-
 bot.catch(err => {
   console.log(err);
 });

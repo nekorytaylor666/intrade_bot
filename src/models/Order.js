@@ -46,6 +46,9 @@ const OrderSchema = new Schema({
     type: String,
     default: 'Moderating',
   },
+  channelMsgId: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model('Order', OrderSchema);

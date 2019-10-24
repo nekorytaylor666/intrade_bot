@@ -51,6 +51,7 @@ contactHandler.hears('Назад', ctx => {
 
 contactHandler.action('check', async ctx => {
   const user = ctx.session.user;
+
   const updatedUser = new User({
     _id: user._id,
     phoneNumber: user.phoneNumber,
@@ -58,7 +59,6 @@ contactHandler.action('check', async ctx => {
     lastName: user.lastName,
     telegramUserId: user.telegramUserId,
     isPremium: false,
-    orders: [...user.orders],
     email: user.email,
     companyName: user.companyName,
   });

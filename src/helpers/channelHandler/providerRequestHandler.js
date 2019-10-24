@@ -64,6 +64,7 @@ providerRequestHandler.action(/callback (.+)/i, async ctx => {
     provider: user.id,
     order: orderId,
   });
+  console.log(ctx.callbackQuery.from);
   if (order.status === 'Proccesing') {
     ctx.answerCbQuery('Заказ уже нашел исполнителя.');
     return ctx.deleteMessage();

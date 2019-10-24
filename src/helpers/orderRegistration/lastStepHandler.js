@@ -108,7 +108,6 @@ lastStep.hears('Далее', async ctx => {
       docType: docType,
       fileId: fileId,
     });
-    user.orders.push(newOrder.id);
     await user.save();
     const savedOrder = await newOrder.save();
     ctx.session.savedOrder = savedOrder;

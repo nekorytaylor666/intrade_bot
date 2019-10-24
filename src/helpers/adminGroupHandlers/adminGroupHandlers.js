@@ -132,7 +132,7 @@ adminGroupHandler.action(/send (.+)/i, async ctx => {
   const officialChannelId = -process.env.OFFICIAL_CHANNEL_CHAT_ID;
 
   if (order.fileId) {
-    return await sendFileWithCaption(
+    const botMessage = await sendFileWithCaption(
       ctx,
       officialChannelId,
       order.fileId,
@@ -140,9 +140,11 @@ adminGroupHandler.action(/send (.+)/i, async ctx => {
       message,
       orderId,
     );
+    order.channelMsgId = botMessage.message_id;
+    await order.save();
   }
   if (!order.fileId) {
-    ctx.telegram.sendMessage(
+    const botMessage = await ctx.telegram.sendMessage(
       officialChannelId,
       message,
       Markup.inlineKeyboard(
@@ -157,6 +159,8 @@ adminGroupHandler.action(/send (.+)/i, async ctx => {
         },
       ).extra(),
     );
+    order.channelMsgId = botMessage.message_id;
+    await order.save();
   }
 });
 module.exports = adminGroupHandler;

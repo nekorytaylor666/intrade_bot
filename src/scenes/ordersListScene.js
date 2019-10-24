@@ -3,6 +3,7 @@ const { Extra, Markup } = require('telegraf');
 const orderListScene = new Scene('orderList');
 
 const User = require('../models/User');
+const Order = require('../models/Order');
 
 orderListScene.enter(async ctx => {
   const telegramId = ctx.session.user.telegramUserId;
@@ -12,7 +13,7 @@ orderListScene.enter(async ctx => {
   }).populate('orders');
 
   const user = docs[0];
-  const orderList = user.orders;
+  const orderList = await Order.find({ customer: user.id });
 
   ctx.reply(
     `${orderList.map(

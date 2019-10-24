@@ -1,11 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-
-// phone_number,
-// first_name,
-// last_name,
-// user_id
 
 const UserSchema = new Schema({
   firstName: {
@@ -34,12 +28,6 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
-  orders: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Order',
-    },
-  ],
   telegramUsername: String,
 });
 
