@@ -56,7 +56,7 @@ app.listen(port, function() {
   console.log(`Intrade BOT: Example app listening on port ${port}!`);
 });
 
-bot.command('test', ctx => checkUserForOutDatingOrders(ctx));
+// bot.command('test', ctx => checkUserForOutDatingOrders(ctx));
 
 bot.use(stage.middleware());
 bot.use(adminGroupHandler);
