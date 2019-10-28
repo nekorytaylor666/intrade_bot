@@ -16,7 +16,7 @@ acceptHandler.action(/accept (.+)/i, async ctx => {
   const order = await Order.findById(orderId).populate('customer');
   const customer = order.customer;
   order.isActive = false;
-  order.status = 'Proccesing';
+  order.status = 'Solved';
   await order.save();
   await providerRequest.save();
 

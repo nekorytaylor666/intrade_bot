@@ -11,7 +11,7 @@ adminGroupHandler.action(/check (.+)/i, async ctx => {
   try {
     const order = await Order.findById(orderId).populate('customer');
     order.isActive = true;
-    order.status = 'Public';
+    order.status = 'Confirmed';
     await order.save();
 
     const telegramId = order.customer.telegramUserId;
@@ -45,6 +45,7 @@ adminGroupHandler.action(/cancel (.+)/i, async ctx => {
   try {
     const order = await Order.findById(orderId).populate('customer');
     order.isActive = false;
+    order.status = 'Moderating';
     await order.save();
     const telegramId = order.customer.telegramUserId;
     ctx.telegram.sendMessage(
@@ -116,7 +117,7 @@ adminGroupHandler.action(/send (.+)/i, async ctx => {
   const orderId = ctx.match[1];
 
   const order = await Order.findById(orderId).populate('customer');
-
+  order.status = 'Public';
   ctx.editMessageReplyMarkup({
     inline_keyboard: [
       [

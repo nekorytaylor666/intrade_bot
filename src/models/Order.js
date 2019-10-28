@@ -42,6 +42,7 @@ const OrderSchema = new Schema({
     type: Number,
     default: 0,
   },
+  // order statuses = Moderating, Confirmed,  Public, Outdated, Solved
   status: {
     type: String,
     default: 'Moderating',

@@ -2,12 +2,12 @@
   "name": "intrade_tg_bot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tsc": "tsc",
     "dev": "nodemon src/app.js",
-    "start": "concurrently \"node src/app.js\" \"node providerAproveBot/app.js\""
+    "start": "node src/app.js"
   },
   "keywords": [],
   "author": "",

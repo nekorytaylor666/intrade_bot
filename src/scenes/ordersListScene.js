@@ -6,41 +6,44 @@ const User = require('../models/User');
 const Order = require('../models/Order');
 
 orderListScene.enter(async ctx => {
-  const telegramId = ctx.session.user.telegramUserId;
+  const user = ctx.session.user;
+  const orders = await Order.find({ customer: user._id })
+    .lean()
+    .limit(50);
+  let ordersListMsg = '';
+  let emojiStatus = '';
+  orders.map((order, index) => {
+    const { status, description } = order;
+    let statusPart = '';
+    if (status === 'Moderating') {
+      emojiStatus = '👨🏼‍💻';
+      statusPart =
+        'Закан на модерации. Вам придет уведомление о подтверждении';
+    } else if (status === 'Public') {
+      emojiStatus = '🔊';
+      statusPart = `Опубликован в канале. ✅ Откликов: ${order.callbackClicks}`;
+    } else if (status === 'Confirmed') {
+      emojiStatus = '🆗';
+      statusPart = `Подтвержден администратором. Ожидает публикации в канале.`;
+    } else if (status === 'Outdated') {
+      emojiStatus = '💤';
+      statusPart =
+        'Удален из канала. Купите членство для добавления в канал.';
+    } else if (status === 'Solved') {
+      emojiStatus = '⚒';
+      statusPart = 'На выполнении.';
+    }
 
-  const docs = await User.find({
-    telegramUserId: telegramId,
-  }).populate('orders');
-
-  const user = docs[0];
-  const orderList = await Order.find({ customer: user.id });
-
-  ctx.reply(
-    `${orderList.map(
-      (order, index) =>
-        `${index + 1}. ${order.description}: ${
-          order.isActive ? 'active' : 'solved'
-        }\n`,
-    )}`,
-    Markup.inlineKeyboard([
-      Markup.callbackButton('Leave', 'leave'),
-    ]).extra(),
-  );
-  ctx.session.orders = orderList;
-});
-
-orderListScene.action('leave', ctx => {
-  const orderList = ctx.session.orders;
-
-  ctx.editMessageText(
-    `${orderList.map(
-      (order, index) =>
-        `${index + 1}. ${order.description}: ${
-          order.isActive ? 'active' : 'solved'
-        }\n`,
-    )}`,
-    Extra.HTML().markup(m => m.inlineKeyboard([])),
-  );
+    ordersListMsg = ordersListMsg.concat(
+      `${index + 1}: `,
+      `${emojiStatus} `,
+      description,
+      '\n',
+      statusPart,
+      '\n\n',
+    );
+  });
+  ctx.reply(ordersListMsg);
   return ctx.scene.enter('orders');
 });
 
