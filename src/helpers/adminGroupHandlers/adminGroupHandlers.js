@@ -17,7 +17,18 @@ adminGroupHandler.action(/check (.+)/i, async ctx => {
     const telegramId = order.customer.telegramUserId;
     ctx.telegram.sendMessage(
       telegramId,
-      `Заказ на "${order.description}"\nБыл подтвержден администратором.`,
+      `Заказ на "${order.description}"\nБыл подтвержден администратором. Ваш заказ опубликован в официальном канале. https://t.me/intrade_provider`,
+      Markup.inlineKeyboard(
+        [
+          Markup.urlButton(
+            `Канал Intrade`,
+            `https://t.me/intrade_provider`,
+          ),
+        ],
+        {
+          columns: 1,
+        },
+      ).extra(),
     );
     ctx.editMessageReplyMarkup({
       inline_keyboard: [
