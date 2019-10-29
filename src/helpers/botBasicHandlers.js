@@ -14,22 +14,30 @@ basicHandler.command('start', ctx => {
   }
 });
 basicHandler.on('callback_query', ctx => {
-  if (!ctx.user) {
-    ctx.answerCbQuery(
-      'Невозможно обработать для неавторизанного пользователя',
-    );
-    ctx.reply(
-      'Для продолжения работы запустите бота командой /start',
-      Markup.keyboard([['/start']])
-        .oneTime()
-        .resize()
-        .extra(),
-    );
+  // const chatType = ctx.callbackQuery.from.chat.type;
+  const chatType = ctx.callbackQuery.message.chat.type;
+  if (chatType === 'group') {
+    //TODO get rid of this shit.
+    ctx.answerCbQuery('Недоступно для данного контекста');
   }
-  if (ctx.user) {
-    ctx.answerCbQuery(
-      'Невозможно обработать данную команду для данного контекста',
-    );
+  if (chatType === 'private') {
+    if (!ctx.user) {
+      ctx.answerCbQuery(
+        'Невозможно обработать для неавторизанного пользователя',
+      );
+      ctx.reply(
+        'Для продолжения работы запустите бота командой /start',
+        Markup.keyboard([['/start']])
+          .oneTime()
+          .resize()
+          .extra(),
+      );
+    }
+    if (ctx.user) {
+      ctx.answerCbQuery(
+        'Невозможно обработать данную команду для данного контекста',
+      );
+    }
   }
 });
 
