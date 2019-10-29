@@ -112,6 +112,10 @@ const sendFileWithCaption = async (
   }
 };
 
+adminGroupHandler.action('noting', ctx => {
+  ctx.answerCbQuery('Отправлено в общие канал.');
+});
+
 adminGroupHandler.action(/send (.+)/i, async ctx => {
   const approveAdmin = ctx.callbackQuery.from.username;
   const orderId = ctx.match[1];

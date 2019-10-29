@@ -8,10 +8,9 @@ orders.enter(async ctx => {
     Markup.keyboard([
       ['🆕 Добавить заказ'], // Row1 with 2 buttons
       ['📃 Мои заказы'], // Row2 with 2 buttons
-      ['⛏ Заказы в работе', '☎️ Активные заказы'], // Row3 with 3 buttons
+      ['☎️ Активные заказы'], // Row3 with 3 buttons
       ['Главное меню'], // Row3 with 3 buttons
     ])
-      .oneTime()
       .resize()
       .extra(),
   );
@@ -23,11 +22,31 @@ orders.hears('🆕 Добавить заказ', ctx => {
 orders.hears('📃 Мои заказы', ctx => {
   ctx.scene.enter('orderList');
 });
+orders.hears('⛏ Заказы в работе', ctx => {
+  ctx.reply('Будет добавлено в следующем обновлении.');
+});
 orders.hears('☎️ Активные заказы', ctx => {
-  ctx.reply('Активные заказы');
+  ctx.reply(
+    'Все заказы мы публикуем в нашем официальном канале.',
+    Markup.inlineKeyboard(
+      [
+        Markup.urlButton(
+          'канал Intrade',
+          `https://t.me/intrade_providers`,
+        ),
+      ],
+      {
+        columns: 1,
+      },
+    ).extra(),
+  );
 });
 orders.hears('Главное меню', ctx => {
   ctx.scene.enter('menu');
+});
+
+orders.use(ctx => {
+  ctx.reply('Используйте меню.');
 });
 
 module.exports = orders;
