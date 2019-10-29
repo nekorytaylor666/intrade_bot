@@ -31,8 +31,8 @@ orders.hears('☎️ Активные заказы', ctx => {
     Markup.inlineKeyboard(
       [
         Markup.urlButton(
-          'канал Intrade',
-          `https://t.me/intrade_providers`,
+          'Канал Intrade',
+          `https://t.me/intrade_provider`,
         ),
       ],
       {
