@@ -5,6 +5,8 @@ const Markup = require('telegraf/markup');
 
 const acceptHandler = new Composer();
 
+const deleteMessageFromChannel = require('../../tools/channelMessagesMethods');
+
 acceptHandler.action(/accept (.+)/i, async ctx => {
   const providerRequestId = ctx.match[1];
   const providerRequest = await ProviderRequest.findById(
@@ -17,6 +19,7 @@ acceptHandler.action(/accept (.+)/i, async ctx => {
   const customer = order.customer;
   order.isActive = false;
   order.status = 'Solved';
+  deleteMessageFromChannel(order, ctx);
   await order.save();
   await providerRequest.save();
 
@@ -54,6 +57,7 @@ acceptHandler.action(/accept (.+)/i, async ctx => {
       },
     ).extra(),
   );
+  ctx.deleteMessage();
 });
 
 module.exports = acceptHandler;

@@ -22,7 +22,7 @@ const UserSchema = new Schema({
   telegramUserId: String,
   isPremium: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   date: {
     type: Date,

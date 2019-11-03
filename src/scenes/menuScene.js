@@ -1,5 +1,6 @@
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
+const Composer = require('telegraf/composer');
 
 const providerFillHandler = require('../helpers/providerFillHandler/providerFillHandler');
 const acceptHandler = require('../helpers/acceptHandler/acceptHandler');
@@ -27,7 +28,7 @@ menuScene.enter(ctx => {
     Markup.keyboard([
       ['📰 Заказы'], // Row1 with 2 buttons
       ['⚙️ Настройки'], // Row2 with 2 buttons
-      ['👥 Контакты'], // Row3 with 3 buttons
+      ['👥 Контакты', '👥 Оплата'], // Row3 with 3 buttons
     ])
       .resize()
       .extra(),
@@ -46,6 +47,10 @@ menuScene.hears('📰 Заказы', async ctx => {
 
 menuScene.hears('⚙️ Настройки', ctx => {
   ctx.scene.enter('settings');
+});
+
+menuScene.hears('👥 Оплата', ctx => {
+  ctx.scene.enter('payments');
 });
 
 menuScene.hears('❔ Помощь', ctx => {

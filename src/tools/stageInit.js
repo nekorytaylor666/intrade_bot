@@ -28,6 +28,9 @@ const contactEditScene = require('../helpers/settingsScenes/contactEditScene');
 //provider fill scene
 const providerFillScene = require('../scenes/providerFillScene');
 
+//payments scene
+const paymentScene = require('../scenes/paymentScene');
+
 const stage = new Stage(
   [
     orderRegistrationScene,
@@ -43,6 +46,7 @@ const stage = new Stage(
     contactEditScene,
     faq,
     aboutScene,
+    paymentScene,
   ],
   {
     default: 'menuScene',

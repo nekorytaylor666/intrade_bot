@@ -2,16 +2,7 @@ const Telegram = require('telegraf/telegram');
 const User = require('../models/User');
 const Order = require('../models/Order');
 
-const deleteMessageFromChannel = (order, ctx) => {
-  const msgId = order.channelMsgId;
-  const channelId = -process.env.OFFICIAL_CHANNEL_CHAT_ID;
-  try {
-    return ctx.telegram.deleteMessage(channelId, msgId);
-  } catch (error) {
-    console.log(error);
-    return null;
-  }
-};
+const deleteMessageFromChannel = require('../tools/channelMessagesMethods');
 
 const daysBetween = (first, second) => {
   // Copy date parts of the timestamps, discarding the time parts.
