@@ -6,10 +6,10 @@ orders.enter(async ctx => {
   ctx.reply(
     'Здесь вы можете просмотреть ваши заказы.',
     Markup.keyboard([
-      ['🆕 Добавить заказ'], // Row1 with 2 buttons
-      ['📃 Мои заказы'], // Row2 with 2 buttons
-      ['☎️ Активные заказы'], // Row3 with 3 buttons
-      ['Главное меню'], // Row3 with 3 buttons
+      ['🆕 Добавить заказ'],
+      ['📃 Мои заказы'],
+      ['☎️ Активные заказы'],
+      ['Главное меню'],
     ])
       .resize()
       .extra(),

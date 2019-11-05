@@ -36,17 +36,19 @@ const getPayments = async () => {
   return formatedData;
 };
 
-const checkTransaction = async (transHash, phoneNumber, sum) => {
+const checkTransaction = async (transHash, phoneNumber) => {
   const data = await getPayments();
+  const phoneNumberPattern = /[^+][0-9]{10}/gm;
+  const validNumber = phoneNumber.match(phoneNumberPattern)[0];
   const res = data.filter(elem => elem.comment === transHash)[0];
   if (
+    res &&
     res.status === 'SUCCESS' &&
-    res.phoneNumber === phoneNumber &&
-    sum === res.sum.amount
+    res.phoneNumber === validNumber
   ) {
-    return true;
+    return res.sum.amount;
   }
-  return false;
+  return null;
 };
 
 module.exports = checkTransaction;

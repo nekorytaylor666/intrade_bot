@@ -24,6 +24,10 @@ const UserSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  balance: {
+    type: Number,
+    default: 0,
+  },
   date: {
     type: Date,
     default: Date.now(),
@@ -31,4 +35,6 @@ const UserSchema = new Schema({
   telegramUsername: String,
 });
 
-module.exports = mongoose.model('User', UserSchema);
+const UserModel = mongoose.model('User', UserSchema);
+
+module.exports = UserModel;

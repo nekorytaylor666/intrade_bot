@@ -3,6 +3,7 @@ const Markup = require('telegraf/markup');
 const User = require('../../models/User');
 const Order = require('../../models/Order');
 const ProviderRequest = require('../../models/ProviderRequest');
+const CheckAndPay = require('../../tools/payments');
 
 const providerRequestHandler = new Composer();
 
@@ -58,13 +59,13 @@ providerRequestHandler.action(/callback (.+)/i, async ctx => {
     telegramUserId: userTelegramId,
   });
   const user = docs[0];
+
   const order = await Order.findById(orderId).populate('customer');
   const isSameUser = user.id === order.customer.id;
   const requestExists = await ProviderRequest.exists({
     provider: user.id,
     order: orderId,
   });
-  console.log(ctx.callbackQuery.from);
   if (process.env.DEBUG !== 'TRUE') {
     if (requestExists) {
       return ctx.answerCbQuery(
@@ -76,6 +77,13 @@ providerRequestHandler.action(/callback (.+)/i, async ctx => {
         `Вы не можете отправлять запрос на исполнение на свой же заказ.`,
       );
     }
+  }
+  const didPay = await CheckAndPay(user, process.env.REQUEST_PRICE);
+
+  if (!didPay) {
+    return ctx.answerCbQuery(
+      `Ваш баланс: ${user.balance}. Пополните для отправки запроса`,
+    );
   }
 
   const providerRequest = new ProviderRequest({

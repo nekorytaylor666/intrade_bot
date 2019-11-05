@@ -30,4 +30,9 @@ orderRegistrationScene.hears('Отмена', ctx => {
   ctx.scene.enter('orders');
 });
 
+orderRegistrationScene.command('cancel', ctx => {
+  ctx.scene.leave();
+  ctx.scene.enter('orders');
+});
+
 module.exports = orderRegistrationScene;

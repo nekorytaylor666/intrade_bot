@@ -166,7 +166,7 @@ adminGroupHandler.action(/send (.+)/i, async ctx => {
       Markup.inlineKeyboard(
         [
           Markup.callbackButton(
-            `Откликнуться`,
+            `Откликнуться - 100тг`,
             `callback ${orderId}`,
           ),
         ],

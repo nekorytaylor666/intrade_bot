@@ -28,10 +28,10 @@ const contactEdit = new WizardScene(
       
       По умолчанию берутся данные вашего телеграмм профиля.`,
       Markup.keyboard([
-        ['Имя'], // Row1 with 2 buttons
-        ['Название компании'], // Row2 with 2 buttons
-        ['Почта', 'Телефон'], // Row3 with 3 buttons
-        ['⬅️ Главное меню'], // Row3 with 3 buttons
+        ['Имя'],
+        ['Название компании'],
+        ['Почта', 'Телефон'],
+        ['⬅️ Главное меню'],
       ])
         .oneTime()
         .resize()
