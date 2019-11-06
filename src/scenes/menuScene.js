@@ -17,7 +17,7 @@ menuScene.enter(ctx => {
     Markup.keyboard([
       ['📰 Заказы'],
       ['⚙️ Настройки'],
-      ['👥 Контакты', '👥 Оплата'],
+      ['👥 Контакты', '💵 Оплата'],
     ])
       .resize()
       .extra(),
@@ -38,7 +38,7 @@ menuScene.hears('⚙️ Настройки', ctx => {
   ctx.scene.enter('settings');
 });
 
-menuScene.hears('👥 Оплата', ctx => {
+menuScene.hears('💵 Оплата', ctx => {
   ctx.scene.enter('payments');
 });
 
