@@ -12,9 +12,17 @@ paymentScene.enter(async ctx => {
   const userId = ctx.session.user._id;
   const user = await User.findById(userId);
   ctx.scene.session.user = user;
+  if (!user.balance) {
+    user.balance = 0;
+    await user.save();
+  }
   return ctx.reply(
     `Ваш баланс: ${user.balance}`,
-    Markup.keyboard([['Пополнить счет'], ['⬅️ Главное меню']])
+    Markup.keyboard([
+      ['Пополнить счет'],
+      ['Мои платежи'],
+      ['⬅️ Главное меню'],
+    ])
       .resize()
       .extra(),
   );
@@ -23,6 +31,19 @@ paymentScene.enter(async ctx => {
 paymentScene.command('leave', ctx => {
   ctx.scene.leave();
   ctx.scene.enter('menu');
+});
+
+paymentScene.hears('Мои платежи', async ctx => {
+  const user = ctx.scene.session.user;
+  const payments = await PaymentRequest.find({
+    customer: user._id,
+    status: 'COMPLETED',
+  });
+  let message = '';
+  payments.map((transaction, index) => {
+    message += `${index + 1}. Сумма: ${transaction.amount} тг.\n`;
+  });
+  ctx.reply(message);
 });
 
 paymentScene.hears('⬅️ Главное меню', ctx => {
@@ -64,7 +85,7 @@ paymentScene.hears('Пополнить счет', async ctx => {
   }
 
   ctx.reply(
-    `Для пополнения баланса вам нужно \nперечислить средства на QIWI-кошелек: +${wallet}\nВАЖНО! Комментарий к переводу должен быть: \n\n${transactionHash}\n\nВ противном случае ваш перевод не будет обработан.`,
+    `Для пополнения баланса вам нужно \nперечислить средства на QIWI-кошелек: +${wallet}\nВАЖНО! Комментарий к переводу должен быть: \n\n${transactionHash}\n\nВ противном случае ваш перевод не будет обработан. \nОтправлять в тенге.`,
     Markup.inlineKeyboard(
       [
         Markup.urlButton(`Сайт Qiwi.com`, `https://qiwi.com`),
@@ -101,6 +122,8 @@ paymentScene.action(/check (.+)/i, async ctx => {
     user.balance += res;
     await user.save();
     paymentRequest.status = 'COMPLETED';
+    paymentRequest.amount = res;
+    paymentRequest.date = Date.now();
     await paymentRequest.save();
     return ctx.reply('Текущий баланс: ' + user.balance);
   } else {

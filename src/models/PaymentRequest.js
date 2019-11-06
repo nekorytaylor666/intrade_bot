@@ -13,6 +13,14 @@ const PaymentsRequest = new Schema({
     type: String,
     // Possible statuses WAITING, CANCELED, COMPLETED
   },
+  amount: {
+    type: Number,
+  },
+  //TODO переписать так чтоб ставило дату когда перешел в Completed
+  date: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 module.exports = mongoose.model('PaymentsRequest', PaymentsRequest);

@@ -21,7 +21,13 @@ const getPayments = async () => {
   const data = result.data.data; // у киви небольшой запар в апи поэтому нужно два раза заходить в data.
   const formatedData = data.map(elem => {
     const comment = elem.comment;
-    const sum = elem.sum;
+    let sum = 0;
+    if (elem.sum.currency === 398) {
+      sum = elem.sum.amount;
+    }
+    if (elem.sum.currency === 643) {
+      sum = elem.sum.amount * 6;
+    }
     const phoneNumber = elem.personId.toString();
     const date = elem.date;
     const status = elem.status;
