@@ -67,7 +67,7 @@ orderListScene.hears(/\/return (.*)/, async ctx => {
     if (orderIndex < 0) {
       return ctx.reply('Такого заказа нет');
     }
-    if (orders[orderIndex].status === 'OUTDATED') {
+    if (orders[orderIndex].status === 'Outdated') {
       const orderId = orders[orderIndex]._id;
       await sendOrderToChannel(ctx, orderId);
       ctx.reply('Заказ снова отправлен в канал');
