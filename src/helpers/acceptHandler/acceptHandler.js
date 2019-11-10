@@ -5,7 +5,8 @@ const Markup = require('telegraf/markup');
 
 const acceptHandler = new Composer();
 
-const deleteMessageFromChannel = require('../../tools/channelMessagesMethods');
+const deleteMessageFromChannel = require('../../tools/channelMessagesMethods')
+  .deleteMessageFromChannel;
 
 acceptHandler.action(/accept (.+)/i, async ctx => {
   const providerRequestId = ctx.match[1];

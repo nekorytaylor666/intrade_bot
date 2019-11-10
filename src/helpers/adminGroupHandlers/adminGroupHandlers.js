@@ -2,6 +2,9 @@ const Composer = require('telegraf/composer');
 const Markup = require('telegraf/markup');
 const Order = require('../../models/Order');
 
+const sendOrderToChannel = require('../../tools/channelMessagesMethods')
+  .sendOrderToChannel;
+
 const adminGroupHandler = new Composer();
 
 adminGroupHandler.action(/check (.+)/i, async ctx => {
@@ -78,61 +81,13 @@ adminGroupHandler.action(/cancel (.+)/i, async ctx => {
   }
 });
 
-const sendFileWithCaption = async (
-  ctx,
-  channelId,
-  fileId,
-  docType,
-  message,
-  orderId,
-) => {
-  switch (docType) {
-    case 'doc':
-      return await ctx.telegram.sendDocument(channelId, fileId, {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: 'Откликнуться',
-                callback_data: `callback ${orderId}`,
-                hide: false,
-              },
-            ],
-          ],
-        },
-        caption: message,
-      });
-      break;
-    case 'photo':
-      return await ctx.telegram.sendPhoto(channelId, fileId, {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: 'Откликнуться',
-                callback_data: `callback ${orderId}`,
-                hide: false,
-              },
-            ],
-          ],
-        },
-        caption: message,
-      });
-    default:
-      break;
-  }
-};
-
 adminGroupHandler.action('noting', ctx => {
-  ctx.answerCbQuery('Отправлено в общие канал.');
+  ctx.answerCbQuery('Отправлено в общий канал.');
 });
 
 adminGroupHandler.action(/send (.+)/i, async ctx => {
   const approveAdmin = ctx.callbackQuery.from.username;
   const orderId = ctx.match[1];
-
-  const order = await Order.findById(orderId).populate('customer');
-  order.status = 'Public';
   ctx.editMessageReplyMarkup({
     inline_keyboard: [
       [
@@ -143,40 +98,6 @@ adminGroupHandler.action(/send (.+)/i, async ctx => {
       ],
     ],
   });
-
-  const message = `Описание заказа: ${order.description}\nИмя: ${order.customer.firstName}\nКомпания: ${order.customer.companyName}`;
-  const officialChannelId = -process.env.OFFICIAL_CHANNEL_CHAT_ID;
-
-  if (order.fileId) {
-    const botMessage = await sendFileWithCaption(
-      ctx,
-      officialChannelId,
-      order.fileId,
-      order.docType,
-      message,
-      orderId,
-    );
-    order.channelMsgId = botMessage.message_id;
-    await order.save();
-  }
-  if (!order.fileId) {
-    const botMessage = await ctx.telegram.sendMessage(
-      officialChannelId,
-      message,
-      Markup.inlineKeyboard(
-        [
-          Markup.callbackButton(
-            `Откликнуться - 100тг`,
-            `callback ${orderId}`,
-          ),
-        ],
-        {
-          columns: 1,
-        },
-      ).extra(),
-    );
-    order.channelMsgId = botMessage.message_id;
-    await order.save();
-  }
+  await sendOrderToChannel(ctx, orderId);
 });
 module.exports = adminGroupHandler;

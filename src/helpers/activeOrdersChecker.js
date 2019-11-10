@@ -31,7 +31,7 @@ const checkUserForOutDatingOrders = async ctx => {
   const telegram = new Telegram(process.env.TELEGRAM_TOKEN);
   //amount of days after order become outdated
   //TODO change this value for something more reliable
-  const outDateAmount = 0;
+  const outDateAmount = 7;
   const cursor = User.find({
     isPremium: false,
   })
@@ -61,12 +61,12 @@ const checkUserForOutDatingOrders = async ctx => {
           outDatedOrders.forEach(order => {
             order.status = 'Outdated';
             order.isActive = false;
-            deleteMessageFromChannel(order, ctx);
+            // deleteMessageFromChannel(order, ctx);
             order.save();
           });
           await telegram.sendMessage(
             user.telegramUserId,
-            `Эти заказы были удалены из канала. Для того, чтобы их вернуть просим вас приобрести премиум подписку.:\n${outDatedOrders.map(
+            `Эти заказы были удалены из канала. Для того, чтобы их вернуть просим вас зайти в ваши заказы и вернуть их:\n${outDatedOrders.map(
               (doc, index) => `${index + 1}.${doc.description}\n`,
             )}`,
           );

@@ -61,6 +61,7 @@ contactHandler.action('check', async ctx => {
     isPremium: false,
     email: user.email,
     companyName: user.companyName,
+    balance: user.balance,
   });
   try {
     await User.updateOne(

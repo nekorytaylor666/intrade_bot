@@ -1,5 +1,4 @@
 const Scene = require('telegraf/scenes/base');
-const Extra = require('telegraf/extra');
 const Markup = require('telegraf/markup');
 
 const helpScene = new Scene('help');

@@ -52,7 +52,7 @@ const checkTransaction = async (transHash, phoneNumber) => {
     res.status === 'SUCCESS' &&
     res.phoneNumber === validNumber
   ) {
-    return res.sum.amount;
+    return res.sum;
   }
   return null;
 };

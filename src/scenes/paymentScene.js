@@ -1,7 +1,6 @@
 const Scene = require('telegraf/scenes/base');
 const User = require('../models/User');
 const PaymentRequest = require('../models/PaymentRequest');
-const Extra = require('telegraf/extra');
 const Markup = require('telegraf/markup');
 const bcrypt = require('bcrypt');
 
@@ -39,6 +38,9 @@ paymentScene.hears('Мои платежи', async ctx => {
     customer: user._id,
     status: 'COMPLETED',
   });
+  if (payments.length < 0) {
+    return ctx.reply('У вас еще нет платежей.');
+  }
   let message = '';
   payments.map((transaction, index) => {
     message += `${index + 1}. Сумма: ${transaction.amount} тг.\n`;
@@ -127,7 +129,7 @@ paymentScene.action(/check (.+)/i, async ctx => {
     await paymentRequest.save();
     return ctx.reply('Текущий баланс: ' + user.balance);
   } else {
-    ctx.answerCbQuery(`Ваш платеж еще обрабатывается!`);
+    ctx.answerCbQuery(`💵 Ваш платеж еще обрабатывается!`);
     return ctx.reply(
       'Попробуйте проверить платеж позже или обратитесь к администраторам.',
     );

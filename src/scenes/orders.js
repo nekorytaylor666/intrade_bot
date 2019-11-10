@@ -1,5 +1,5 @@
 const Scene = require('telegraf/scenes/base');
-const { Extra, Markup } = require('telegraf');
+const { Markup } = require('telegraf');
 const orders = new Scene('orders');
 
 orders.enter(async ctx => {
@@ -8,8 +8,7 @@ orders.enter(async ctx => {
     Markup.keyboard([
       ['🆕 Добавить заказ'],
       ['📃 Мои заказы'],
-      ['☎️ Активные заказы'],
-      ['Главное меню'],
+      ['⬅️ Главное меню'],
     ])
       .resize()
       .extra(),
@@ -41,7 +40,7 @@ orders.hears('☎️ Активные заказы', ctx => {
     ).extra(),
   );
 });
-orders.hears('Главное меню', ctx => {
+orders.hears('⬅️ Главное меню', ctx => {
   ctx.scene.enter('menu');
 });
 

@@ -1,6 +1,5 @@
 const Scene = require('telegraf/scenes/base');
 const Markup = require('telegraf/markup');
-const Composer = require('telegraf/composer');
 
 const providerFillHandler = require('../helpers/providerFillHandler/providerFillHandler');
 const acceptHandler = require('../helpers/acceptHandler/acceptHandler');
@@ -16,8 +15,8 @@ menuScene.enter(ctx => {
     'Данный бот поможет вам найти поставщиков где и когда угодно.',
     Markup.keyboard([
       ['📰 Заказы'],
-      ['⚙️ Настройки'],
-      ['👥 Контакты', '💵 Оплата'],
+      ['💵 Оплата'],
+      ['👥 Контакты', '⚙️ Настройки'],
     ])
       .resize()
       .extra(),

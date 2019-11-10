@@ -56,7 +56,9 @@ app.listen(port, function() {
   console.log(`Intrade BOT: Example app listening on port ${port}!`);
 });
 
-// bot.command('test', ctx => checkUserForOutDatingOrders(ctx));
+bot.command('test', ctx => {
+  ctx.telegram.sendMessage('@test_intrade_channel', 'test');
+});
 
 bot.use(stage.middleware());
 bot.use(adminGroupHandler);
